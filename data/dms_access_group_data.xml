@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="dms_access_group_legal_dms_admin" model="dms.access.group">
+        <field name="name">Legal DMS Admin Access</field>
+        <field name="perm_create">True</field>
+        <field name="perm_write">True</field>
+        <field name="perm_unlink">True</field>
+        <field
+            name="group_ids"
+            eval="[(6, 0, [ref('legal_dms_structure.group_legal_dms_admin')])]"
+        />
+    </record>
+</odoo>

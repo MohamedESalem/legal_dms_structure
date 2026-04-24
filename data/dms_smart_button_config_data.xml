@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="dms_smart_button_partner_root" model="dms.smart.button.config">
+        <field name="name">Documents</field>
+        <field name="target_model">partner</field>
+        <field name="directory_type">root</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="dms_smart_button_partner_personal_papers" model="dms.smart.button.config">
+        <field name="name">Personal Papers</field>
+        <field name="target_model">partner</field>
+        <field name="directory_type">custom</field>
+        <field name="template_id" ref="legal_dms_structure.dms_directory_template_client_personal_papers" />
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="dms_smart_button_partner_cases" model="dms.smart.button.config">
+        <field name="name">Cases</field>
+        <field name="target_model">partner</field>
+        <field name="directory_type">cases</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="dms_smart_button_partner_subjects" model="dms.smart.button.config">
+        <field name="name">Subjects</field>
+        <field name="target_model">partner</field>
+        <field name="directory_type">subjects</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="dms_smart_button_case_root" model="dms.smart.button.config">
+        <field name="name">Case Documents</field>
+        <field name="target_model">case</field>
+        <field name="directory_type">root</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="dms_smart_button_case_correspondence" model="dms.smart.button.config">
+        <field name="name">Correspondence</field>
+        <field name="target_model">case</field>
+        <field name="directory_type">custom</field>
+        <field name="template_id" ref="legal_dms_structure.dms_directory_template_case_correspondence" />
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="dms_smart_button_subject_root" model="dms.smart.button.config">
+        <field name="name">Subject Documents</field>
+        <field name="target_model">subject</field>
+        <field name="directory_type">root</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="dms_smart_button_subject_research" model="dms.smart.button.config">
+        <field name="name">Research</field>
+        <field name="target_model">subject</field>
+        <field name="directory_type">custom</field>
+        <field name="template_id" ref="legal_dms_structure.dms_directory_template_subject_research" />
+        <field name="sequence">20</field>
+    </record>
+</odoo>

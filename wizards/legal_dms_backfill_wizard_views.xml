@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_legal_dms_backfill_wizard_form" model="ir.ui.view">
+        <field name="name">legal.dms.backfill.wizard.form</field>
+        <field name="model">legal.dms.backfill.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Backfill Legal DMS">
+                <group>
+                    <field name="create_clients" />
+                    <field name="create_cases" />
+                    <field name="create_subjects" />
+                </group>
+                <footer>
+                    <button
+                        name="action_backfill"
+                        type="object"
+                        string="Run Backfill"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_legal_dms_backfill_wizard" model="ir.actions.act_window">
+        <field name="name">Backfill Legal DMS</field>
+        <field name="res_model">legal.dms.backfill.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="legal_dms_structure.view_legal_dms_backfill_wizard_form" />
+        <field name="target">new</field>
+    </record>
+</odoo>

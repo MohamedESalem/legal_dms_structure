@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="category_legal_dms_security" model="ir.module.category">
+        <field name="name">Legal DMS</field>
+        <field name="description">Legal DMS structure governance and access roles.</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="group_legal_dms_admin" model="res.groups">
+        <field name="name">Legal DMS Admin</field>
+        <field name="category_id" ref="legal_dms_structure.category_legal_dms_security" />
+        <field name="implied_ids" eval="[(4, ref('dms.group_dms_manager'))]" />
+        <field
+            name="users"
+            eval="[(4, ref('base.user_admin')), (4, ref('base.user_root'))]"
+        />
+    </record>
+
+    <record id="group_legal_dms_lawyer" model="res.groups">
+        <field name="name">Lawyer</field>
+        <field name="category_id" ref="legal_dms_structure.category_legal_dms_security" />
+        <field name="implied_ids" eval="[(4, ref('dms.group_dms_user'))]" />
+    </record>
+
+    <record id="group_legal_dms_staff" model="res.groups">
+        <field name="name">Staff</field>
+        <field name="category_id" ref="legal_dms_structure.category_legal_dms_security" />
+        <field name="implied_ids" eval="[(4, ref('dms.group_dms_user'))]" />
+    </record>
+
+    <record id="group_legal_dms_portal" model="res.groups">
+        <field name="name">Portal</field>
+        <field name="category_id" ref="legal_dms_structure.category_legal_dms_security" />
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]" />
+    </record>
+</odoo>

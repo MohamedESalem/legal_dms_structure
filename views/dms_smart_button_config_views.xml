@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dms_smart_button_config_list" model="ir.ui.view">
+        <field name="name">dms.smart.button.config.list</field>
+        <field name="model">dms.smart.button.config</field>
+        <field name="arch" type="xml">
+            <list default_order="target_model, sequence, id">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="target_model" />
+                <field name="directory_type" />
+                <field name="template_id" optional="show" />
+                <field name="active" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dms_smart_button_config_form" model="ir.ui.view">
+        <field name="name">dms.smart.button.config.form</field>
+        <field name="model">dms.smart.button.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" />
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="target_model" />
+                            <field name="directory_type" />
+                            <field
+                                name="template_id"
+                                invisible="directory_type != 'custom'"
+                                required="directory_type == 'custom'"
+                            />
+                        </group>
+                        <group>
+                            <field name="sequence" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dms_smart_button_config" model="ir.actions.act_window">
+        <field name="name">Smart Buttons</field>
+        <field name="res_model">dms.smart.button.config</field>
+        <field name="view_mode">list,form</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_dms_smart_button_config_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_dms_smart_button_config_form')})]"
+        />
+    </record>
+</odoo>

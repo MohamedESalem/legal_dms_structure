@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_legal_dms_structure" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.legal.dms.structure</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="dms.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='dms']" position="inside">
+                <block title="Legal DMS Structure" name="legal_dms_structure">
+                    <setting
+                        id="legal_dms_storage_setting"
+                        string="Legal DMS Storage"
+                        help="Choose the storage that will host managed client, case, and subject directories."
+                    >
+                        <field name="legal_dms_storage_id" options="{'no_create': True}" />
+                    </setting>
+                    <setting
+                        id="legal_dms_templates_setting"
+                        string="Directory Templates"
+                        help="Maintain the default directory templates applied to new legal records."
+                    >
+                        <button
+                            name="action_open_legal_dms_templates"
+                            string="Directory Templates"
+                            type="object"
+                            class="oe_link"
+                            icon="fa-arrow-right"
+                        />
+                    </setting>
+                    <setting
+                        id="legal_dms_smart_buttons_setting"
+                        string="Smart Buttons"
+                        help="Configure which legal DMS buttons appear on client and matter forms."
+                    >
+                        <button
+                            name="action_open_legal_dms_smart_buttons"
+                            string="Smart Buttons"
+                            type="object"
+                            class="oe_link"
+                            icon="fa-arrow-right"
+                        />
+                    </setting>
+                    <setting
+                        id="legal_dms_backfill_setting"
+                        string="Backfill Existing Records"
+                        help="Create missing legal DMS structures for existing clients, cases, and subjects without duplicating linked folders."
+                    >
+                        <button
+                            name="action_open_legal_dms_backfill"
+                            string="Run Backfill"
+                            type="object"
+                            class="oe_link"
+                            icon="fa-arrow-right"
+                        />
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
