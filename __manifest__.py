@@ -21,7 +21,6 @@
         "security/ir.model.access.csv",
         "data/dms_access_group_data.xml",
         "data/dms_directory_template_data.xml",
-        "views/dms_directory_views.xml",
         "views/dms_directory_template_views.xml",
         "views/dms_smart_button_config_views.xml",
         "views/res_config_settings_views.xml",
