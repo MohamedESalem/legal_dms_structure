@@ -30,18 +30,6 @@
                     invisible="not dms_archived_directory_id"
                 />
             </xpath>
-
-            <xpath expr="//notebook" position="inside">
-                <page name="legal_dms" string="Legal DMS" invisible="not id">
-                    <group>
-                        <group>
-                            <field name="dms_directory_id" readonly="1" />
-                            <field name="dms_archived_directory_id" readonly="1" />
-                        </group>
-                    </group>
-                    <field name="dms_directory_ids" mode="dms_list" />
-                </page>
-            </xpath>
         </field>
     </record>
 

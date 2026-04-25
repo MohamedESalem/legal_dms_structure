@@ -7,11 +7,6 @@ class DmsSmartButtonConfig(models.Model):
     _description = "Legal DMS Smart Button Configuration"
     _order = "target_model, sequence, id"
 
-    def _register_hook(self):
-        result = super()._register_hook()
-        self.env["legal.dms.service"].sync_smart_button_views()
-        return result
-
     name = fields.Char(required=True)
     target_model = fields.Selection(
         selection=[

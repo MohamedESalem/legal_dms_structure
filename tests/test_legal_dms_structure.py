@@ -95,12 +95,8 @@ class TestLegalDmsStructure(TransactionCase):
         case_group = self.service._get_record_access_group(case)
         subject_group = self.service._get_record_access_group(subject)
 
-        self.assertTrue(
-            self.staff_user_a in client_group.users
-        )
-        self.assertTrue(
-            self.staff_user_b in client_group.users
-        )
+        self.assertTrue(self.staff_user_a in client_group.users)
+        self.assertTrue(self.staff_user_b in client_group.users)
         self.assertEqual(case_dir.group_ids, case_group)
         self.assertEqual(subject_dir.group_ids, subject_group)
         self.assertFalse(case_dir.inherit_group_ids)
@@ -201,7 +197,102 @@ class TestLegalDmsStructure(TransactionCase):
         view_arches = dict(self.env.cr.fetchall())
         partner_arch = view_arches["legal_dms_structure.smart_buttons_partner"]
         project_arch = view_arches["legal_dms_structure.smart_buttons_project"]
+        self.assertIn('expr=\\"//header\\"', partner_arch)
+        self.assertNotIn("button_box", partner_arch)
         self.assertIn("action_open_legal_dms_button", partner_arch)
         self.assertIn("legal_dms_button_config_id", partner_arch)
         self.assertIn("action_open_legal_dms_button", project_arch)
         self.assertIn("matter_type != 'case'", project_arch)
+        self.assertIn("matter_type != 'subject'", project_arch)
+        self.assertNotIn("button_box", project_arch)
+
+    def test_backfill_restores_missing_directory_fields(self):
+        partner = self.env["res.partner"].with_context(skip_legal_dms_auto_create=True).create(
+            {"name": "Client Backfill Restore"}
+        )
+        matter = self.env["project.project"].with_context(
+            skip_legal_dms_auto_create=True
+        ).create(
+            {
+                "name": "Matter Backfill Restore",
+                "partner_id": partner.id,
+                "matter_type": "case",
+                "user_id": self.staff_user_a.id,
+            }
+        )
+
+        self.service.ensure_partner_directory(partner)
+        self.service.ensure_project_directory(matter)
+        partner_directory = partner.dms_directory_id
+        matter_directory = matter.dms_directory_id
+
+        partner.with_context(skip_legal_dms_sync=True).write({"dms_directory_id": False})
+        matter.with_context(skip_legal_dms_sync=True).write({"dms_directory_id": False})
+
+        counts = self.service.backfill()
+
+        partner.invalidate_recordset()
+        matter.invalidate_recordset()
+        self.assertGreaterEqual(counts["clients"], 1)
+        self.assertGreaterEqual(counts["case"], 1)
+        self.assertEqual(partner.dms_directory_id, partner_directory)
+        self.assertEqual(matter.dms_directory_id, matter_directory)
+
+    def test_button_open_does_not_create_missing_directories(self):
+        partner = self.env["res.partner"].with_context(skip_legal_dms_auto_create=True).create(
+            {"name": "Client No Create"}
+        )
+        matter = self.env["project.project"].with_context(
+            skip_legal_dms_auto_create=True
+        ).create(
+            {
+                "name": "Matter No Create",
+                "partner_id": partner.id,
+                "matter_type": "case",
+                "user_id": self.staff_user_a.id,
+            }
+        )
+
+        with self.assertRaises(UserError):
+            self.service.open_button_directory(
+                partner,
+                self.env.ref("legal_dms_structure.dms_smart_button_partner_root").id,
+            )
+        with self.assertRaises(UserError):
+            self.service.open_button_directory(
+                matter,
+                self.env.ref("legal_dms_structure.dms_smart_button_case_root").id,
+            )
+
+        self.assertFalse(partner.dms_directory_id)
+        self.assertFalse(matter.dms_directory_id)
+
+    def test_button_open_uses_simplified_directory_view(self):
+        partner = self._create_client("Client Simple View")
+        matter = self._create_matter(
+            partner,
+            "case",
+            self.staff_user_a,
+            "Matter Simple View",
+        )
+        action = self.service.open_button_directory(
+            partner,
+            self.env.ref("legal_dms_structure.dms_smart_button_partner_root").id,
+        )
+        matter_action = self.service.open_button_directory(
+            matter,
+            self.env.ref("legal_dms_structure.dms_smart_button_case_root").id,
+        )
+
+        self.assertEqual(action["type"], "ir.actions.act_url")
+        self.assertEqual(action["target"], "self")
+        self.assertIn(
+            f"/odoo/contacts/{partner.id}/dms.directory/{partner.dms_directory_id.id}/action-261",
+            action["url"],
+        )
+        self.assertEqual(matter_action["type"], "ir.actions.act_url")
+        self.assertEqual(matter_action["target"], "self")
+        self.assertIn(
+            f"/odoo/projects/{matter.id}/dms.directory/{matter.dms_directory_id.id}/action-261",
+            matter_action["url"],
+        )

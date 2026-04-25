@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from lxml import etree
 
-from odoo import _, models, Command
+from odoo import _, api, models, Command
 from odoo.addons.dms.tools.file import unique_name
 from odoo.exceptions import UserError
 
@@ -28,6 +28,11 @@ class LegalDmsService(models.AbstractModel):
         "project.project": {
             "view_xmlid": "legal_dms_structure.view_project_form_legal_dms_smart_buttons",
         },
+    }
+    _SMART_BUTTON_URL_ACTION_ID = 261
+    _SMART_BUTTON_APP_BY_MODEL = {
+        "res.partner": "contacts",
+        "project.project": "projects",
     }
 
     def _directory_model(self):
@@ -143,8 +148,20 @@ class LegalDmsService(models.AbstractModel):
             limit=1,
         )
 
+    def _get_record_directory_field(self, record):
+        return getattr(record, "dms_directory_id", self.env["dms.directory"]).exists()
+
+    def _get_record_archived_directory_field(self, record):
+        return getattr(record, "dms_archived_directory_id", self.env["dms.directory"]).exists()
+
     def _record_has_any_directory(self, record):
         return bool(self._get_live_directory(record) or self._get_archived_directory(record))
+
+    def _record_needs_directory_sync(self, record):
+        return not (
+            self._get_record_directory_field(record)
+            or self._get_record_archived_directory_field(record)
+        )
 
     def _sync_directory_fields(self, record):
         vals = {}
@@ -513,7 +530,7 @@ class LegalDmsService(models.AbstractModel):
             access_group = self._ensure_record_access_group(
                 partner, self._get_client_assignees(partner)
             )
-            directory = partner.dms_directory_id or self._get_live_directory(partner)
+            directory = self._get_record_directory_field(partner) or self._get_live_directory(partner)
             if directory:
                 self._apply_client_security(directory, access_group)
             self._sync_directory_fields(partner)
@@ -523,7 +540,7 @@ class LegalDmsService(models.AbstractModel):
             access_group = self._ensure_record_access_group(
                 project, self._get_project_assignees(project)
             )
-            directory = project.dms_directory_id or self._get_live_directory(project)
+            directory = self._get_record_directory_field(project) or self._get_live_directory(project)
             if directory:
                 self._apply_matter_security(directory, access_group)
             self._sync_directory_fields(project)
@@ -532,7 +549,7 @@ class LegalDmsService(models.AbstractModel):
     def ensure_partner_directory(self, partner):
         if not self._is_client_partner(partner):
             return self.env["dms.directory"]
-        directory = partner.dms_directory_id or self._get_live_directory(partner)
+        directory = self._get_record_directory_field(partner) or self._get_live_directory(partner)
         if directory:
             self._sync_directory_fields(partner)
             self._ensure_client_container(directory, "cases_container")
@@ -572,7 +589,7 @@ class LegalDmsService(models.AbstractModel):
     def ensure_project_directory(self, project):
         if not self._is_legal_matter(project):
             return self.env["dms.directory"]
-        directory = project.dms_directory_id or self._get_live_directory(project)
+        directory = self._get_record_directory_field(project) or self._get_live_directory(project)
         if directory:
             self._sync_directory_fields(project)
             self.sync_project_access(project)
@@ -601,7 +618,8 @@ class LegalDmsService(models.AbstractModel):
         return directory
 
     def relocate_project_directory(self, project):
-        if not self._is_legal_matter(project) or not project.dms_directory_id:
+        live_directory = self._get_record_directory_field(project)
+        if not self._is_legal_matter(project) or not live_directory:
             return
         client_directory = self.ensure_partner_directory(project.partner_id)
         target_parent = self._ensure_client_container(
@@ -611,10 +629,10 @@ class LegalDmsService(models.AbstractModel):
         values = {
             "legal_node_type": self._matter_root_node_type(project),
         }
-        if project.dms_directory_id.parent_id != target_parent:
+        if live_directory.parent_id != target_parent:
             values["parent_id"] = target_parent.id
             values["name"] = self._project_directory_name(project, target_parent)
-        self._directory_write(project.dms_directory_id, values)
+        self._directory_write(live_directory, values)
         self.sync_project_access(project)
 
     def _archive_subtree_links(self, root_directory):
@@ -671,7 +689,7 @@ class LegalDmsService(models.AbstractModel):
             )
 
     def archive_record(self, record):
-        directory = record.dms_directory_id or self._get_live_directory(record)
+        directory = self._get_record_directory_field(record) or self._get_live_directory(record)
         if not directory:
             return False
         roots = self.ensure_system_roots()
@@ -701,7 +719,10 @@ class LegalDmsService(models.AbstractModel):
         return directory
 
     def unarchive_record(self, record):
-        directory = record.dms_archived_directory_id or self._get_archived_directory(record)
+        directory = (
+            self._get_record_archived_directory_field(record)
+            or self._get_archived_directory(record)
+        )
         if not directory:
             return False
         if record._name == "res.partner":
@@ -737,7 +758,10 @@ class LegalDmsService(models.AbstractModel):
         return directory
 
     def _partner_button_directory(self, partner, config):
-        directory = partner.dms_directory_id or partner.dms_archived_directory_id
+        directory = (
+            self._get_record_directory_field(partner)
+            or self._get_record_archived_directory_field(partner)
+        )
         if not directory:
             return self.env["dms.directory"]
         if config.directory_type == "root":
@@ -760,9 +784,13 @@ class LegalDmsService(models.AbstractModel):
 
     def _project_button_directory(self, project, config):
         if config.directory_type == "root":
-            return project.dms_directory_id or project.dms_archived_directory_id
+            return (
+                self._get_record_directory_field(project)
+                or self._get_record_archived_directory_field(project)
+            )
         client_directory = project.partner_id and (
-            project.partner_id.dms_directory_id or project.partner_id.dms_archived_directory_id
+            self._get_record_directory_field(project.partner_id)
+            or self._get_record_archived_directory_field(project.partner_id)
         )
         if config.directory_type == "cases" and client_directory:
             return client_directory.child_directory_ids.filtered(
@@ -772,7 +800,10 @@ class LegalDmsService(models.AbstractModel):
             return client_directory.child_directory_ids.filtered(
                 lambda item: item.legal_node_type == "subjects_container"
             )[:1]
-        directory = project.dms_directory_id or project.dms_archived_directory_id
+        directory = (
+            self._get_record_directory_field(project)
+            or self._get_record_archived_directory_field(project)
+        )
         if not directory:
             return self.env["dms.directory"]
         return self.env["dms.directory"].sudo().search(
@@ -790,10 +821,21 @@ class LegalDmsService(models.AbstractModel):
             return self._project_button_directory(record, config)
         return self.env["dms.directory"]
 
+    def _smart_button_directory_url(self, record, directory):
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        app = self._SMART_BUTTON_APP_BY_MODEL.get(record._name, "contacts")
+        return (
+            f"{base_url}/odoo/{app}/{record.id}/dms.directory/"
+            f"{directory.id}/action-{self._SMART_BUTTON_URL_ACTION_ID}"
+        )
+
     def open_button_directory(self, record, config_id):
         config = self.env["dms.smart.button.config"].browse(config_id).exists()
         if not config:
             raise UserError(_("The requested smart button configuration no longer exists."))
+        self._sync_directory_fields(record)
+        if record._name == "project.project" and record.partner_id:
+            self._sync_directory_fields(record.partner_id)
         directory = self.resolve_button_directory(record, config)
         if not directory:
             if config.directory_type == "custom":
@@ -804,13 +846,10 @@ class LegalDmsService(models.AbstractModel):
                 )
             raise UserError(_("The requested legal DMS folder is not available."))
         return {
-            "type": "ir.actions.act_window",
+            "type": "ir.actions.act_url",
             "name": directory.display_name,
-            "res_model": "dms.directory",
-            "view_mode": "form",
-            "view_id": self.env.ref("dms.view_dms_directory_form").id,
-            "res_id": directory.id,
-            "target": "current",
+            "url": self._smart_button_directory_url(record, directory),
+            "target": "self",
         }
 
     def _button_config_domain(self, model_name):
@@ -824,65 +863,66 @@ class LegalDmsService(models.AbstractModel):
             order="sequence, id",
         )
 
+    def _smart_button_invisible(self, model_name, config):
+        if model_name != "project.project":
+            return False
+        return (
+            "matter_type != 'case'"
+            if config.target_model == "case"
+            else "matter_type != 'subject'"
+        )
+
+    def _smart_button_attributes(self, model_name, config):
+        attributes = {
+            "name": "action_open_legal_dms_button",
+            "type": "object",
+            "string": config.name,
+            "class": "btn btn-secondary",
+            "context": "{'legal_dms_button_config_id': %d}" % config.id,
+            "groups": self._BUTTON_GROUPS,
+        }
+        invisible = self._smart_button_invisible(model_name, config)
+        if invisible:
+            attributes["invisible"] = invisible
+        return attributes
+
     def inject_smart_buttons(self, arch, model_name):
         configs = self._get_smart_button_configs(model_name)
         if not configs:
             return arch
         document = etree.fromstring(arch.encode())
-        button_boxes = document.xpath("//div[@name='button_box']")
-        if not button_boxes:
+        headers = document.xpath("//header")
+        if not headers:
             return arch
-        button_box = button_boxes[0]
+        header = headers[0]
         if model_name == "project.project" and not document.xpath("//field[@name='matter_type']"):
             sheet = document.xpath("//sheet")
             if sheet:
                 sheet[0].insert(0, etree.Element("field", name="matter_type", invisible="1"))
         for config in configs:
-            attributes = {
-                "name": "action_open_legal_dms_button",
-                "type": "object",
-                "string": config.name,
-                "class": "oe_stat_button",
-                "icon": "fa-folder-open-o",
-                "context": "{'legal_dms_button_config_id': %d}" % config.id,
-                "groups": self._BUTTON_GROUPS,
-            }
-            if model_name == "project.project":
-                attributes["invisible"] = (
-                    "matter_type != 'case'"
-                    if config.target_model == "case"
-                    else "matter_type != 'subject'"
-                )
-            button_box.append(etree.Element("button", **attributes))
+            header.append(etree.Element("button", **self._smart_button_attributes(model_name, config)))
         return etree.tostring(document, encoding="unicode")
 
     def _smart_button_extension_arch(self, model_name):
         document = etree.Element("data")
+        if model_name == "project.project":
+            etree.SubElement(
+                document,
+                "xpath",
+                expr="//sheet[1]",
+                position="inside",
+            ).append(etree.Element("field", name="matter_type", invisible="1"))
         xpath = etree.SubElement(
             document,
             "xpath",
-            expr="//div[@name='button_box']",
+            expr="//header",
             position="inside",
         )
         for config in self._get_smart_button_configs(model_name):
-            attributes = {
-                "name": "action_open_legal_dms_button",
-                "type": "object",
-                "string": config.name,
-                "class": "oe_stat_button",
-                "icon": "fa-folder-open-o",
-                "context": "{'legal_dms_button_config_id': %d}" % config.id,
-                "groups": self._BUTTON_GROUPS,
-            }
-            if model_name == "project.project":
-                attributes["invisible"] = (
-                    "matter_type != 'case'"
-                    if config.target_model == "case"
-                    else "matter_type != 'subject'"
-                )
-            etree.SubElement(xpath, "button", **attributes)
+            etree.SubElement(xpath, "button", **self._smart_button_attributes(model_name, config))
         return etree.tostring(document, encoding="unicode")
 
+    @api.model
     def sync_smart_button_views(self):
         for model_name, spec in self._SMART_BUTTON_VIEW_SPECS.items():
             self.env.ref(spec["view_xmlid"]).sudo().write(
@@ -894,7 +934,7 @@ class LegalDmsService(models.AbstractModel):
         if create_clients:
             partners = self.env["res.partner"].sudo().search([("parent_id", "=", False)])
             for partner in partners:
-                if self._record_has_any_directory(partner):
+                if not self._record_needs_directory_sync(partner):
                     continue
                 self.ensure_partner_directory(partner)
                 counts["clients"] += 1
@@ -910,7 +950,7 @@ class LegalDmsService(models.AbstractModel):
                     continue
                 if project.matter_type == "subject" and not create_subjects:
                     continue
-                if self._record_has_any_directory(project):
+                if not self._record_needs_directory_sync(project):
                     continue
                 self.ensure_project_directory(project)
                 counts[project.matter_type] += 1

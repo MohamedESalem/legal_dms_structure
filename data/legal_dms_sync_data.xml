@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="legal.dms.service" name="sync_smart_button_views" />
+</odoo>
