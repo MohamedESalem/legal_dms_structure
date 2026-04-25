@@ -325,12 +325,15 @@ class LegalDmsService(models.AbstractModel):
         return users.filtered(lambda user: user.active)
 
     def _top_level_templates(self, level):
+        excluded_usages = ["clients_root", "archive_root"]
+        if level == "client":
+            excluded_usages.extend(["cases_container", "subjects_container"])
         return self._template_model().search(
             [
                 ("active", "=", True),
                 ("level", "=", level),
                 ("parent_id", "=", False),
-                ("usage", "not in", ["clients_root", "archive_root"]),
+                ("usage", "not in", excluded_usages),
             ],
             order="sequence, id",
         )
@@ -376,6 +379,28 @@ class LegalDmsService(models.AbstractModel):
         )[:1]
         if container:
             return container
+        expected_template = self._special_template(usage)
+        expected_name = self._default_container_name(usage).strip().casefold()
+        candidates = client_directory.child_directory_ids
+        if expected_template:
+            candidates = candidates.filtered(
+                lambda directory, expected_template=expected_template: (
+                    directory.legal_template_id == expected_template
+                    or (directory.name or "").strip().casefold() == expected_name
+                )
+            )
+        else:
+            candidates = candidates.filtered(
+                lambda directory: (directory.name or "").strip().casefold() == expected_name
+            )
+        if len(candidates) == 1:
+            vals = {
+                "legal_managed": True,
+                "legal_node_type": node_type,
+            }
+            if expected_template:
+                vals["legal_template_id"] = expected_template.id
+            return self._directory_write(candidates, vals)
         return self._directory_create(
             {
                 "name": self._child_unique_name(

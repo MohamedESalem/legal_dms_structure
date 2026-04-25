@@ -1,7 +1,7 @@
 {
     "name": "Legal DMS Structure Manager",
     "summary": "Managed legal document structures on top of OCA DMS",
-    "version": "18.0.1.0.0",
+    "version": "1.0",
     "category": "Document Management",
     "license": "LGPL-3",
     "author": "Mohamed Essam",

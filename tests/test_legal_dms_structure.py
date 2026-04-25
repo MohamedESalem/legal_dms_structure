@@ -57,6 +57,10 @@ class TestLegalDmsStructure(TransactionCase):
         self.assertIn("Personal Papers", child_names_a)
         self.assertIn("Cases", child_names_a)
         self.assertIn("Subjects", child_names_a)
+        self.assertEqual(child_names_a.count("Cases"), 1)
+        self.assertEqual(child_names_a.count("Subjects"), 1)
+        self.assertNotIn("Cases(1)", child_names_a)
+        self.assertNotIn("Subjects(1)", child_names_a)
 
         template = self.env.ref(
             "legal_dms_structure.dms_directory_template_client_personal_papers"
@@ -177,6 +181,66 @@ class TestLegalDmsStructure(TransactionCase):
         self.assertEqual(second_run["case"], 0)
         self.assertTrue(client.dms_directory_id)
         self.assertTrue(case.dms_directory_id)
+        child_names = client.dms_directory_id.child_directory_ids.mapped("name")
+        self.assertEqual(child_names.count("Cases"), 1)
+        self.assertEqual(child_names.count("Subjects"), 1)
+        self.assertNotIn("Cases(1)", child_names)
+        self.assertNotIn("Subjects(1)", child_names)
+
+    def test_ensure_partner_directory_reuses_legacy_container_names(self):
+        client = self.env["res.partner"].with_context(skip_legal_dms_auto_create=True).create(
+            {"name": "Client Legacy Containers"}
+        )
+        roots = self.service.ensure_system_roots()
+        legacy_directory = self.directory_model.create(
+            {
+                "name": self.service._partner_directory_name(client, roots["clients"]),
+                "parent_id": roots["clients"].id,
+                "legal_managed": True,
+                "legal_node_type": "client_root",
+                "legal_record_model": client._name,
+                "legal_record_id": client.id,
+                "res_model": client._name,
+                "res_id": client.id,
+            }
+        )
+        self.directory_model.create(
+            {
+                "name": "Cases",
+                "parent_id": legacy_directory.id,
+                "legal_managed": True,
+                "legal_node_type": "client_node",
+            }
+        )
+        self.directory_model.create(
+            {
+                "name": "Subjects",
+                "parent_id": legacy_directory.id,
+                "legal_managed": True,
+                "legal_node_type": "client_node",
+            }
+        )
+
+        self.service.ensure_partner_directory(client)
+        client.invalidate_recordset()
+        child_directories = client.dms_directory_id.child_directory_ids
+        child_names = child_directories.mapped("name")
+        self.assertEqual(child_names.count("Cases"), 1)
+        self.assertEqual(child_names.count("Subjects"), 1)
+        self.assertNotIn("Cases(1)", child_names)
+        self.assertNotIn("Subjects(1)", child_names)
+        self.assertEqual(
+            len(child_directories.filtered(lambda directory: directory.legal_node_type == "cases_container")),
+            1,
+        )
+        self.assertEqual(
+            len(
+                child_directories.filtered(
+                    lambda directory: directory.legal_node_type == "subjects_container"
+                )
+            ),
+            1,
+        )
 
     def test_dynamic_smart_buttons_are_injected(self):
         self.service.sync_smart_button_views()
