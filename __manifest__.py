@@ -4,7 +4,7 @@
     "version": "18.0.1.0.0",
     "category": "Document Management",
     "license": "LGPL-3",
-    "author": "OpenAI",
+    "author": "Mohamed Essam",
     "website": "https://essamsalem.com",
     "depends": [
         "contacts",
