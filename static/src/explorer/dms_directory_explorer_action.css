@@ -1,0 +1,123 @@
+.o_legal_dms_explorer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 12px;
+    padding: 12px;
+}
+
+.o_legal_dms_explorer_toolbar {
+    display: flex;
+    gap: 8px;
+}
+
+.o_legal_dms_explorer_loading {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.o_legal_dms_explorer_layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 35%) 1fr;
+    gap: 16px;
+    min-height: 440px;
+}
+
+.o_legal_dms_explorer_tree,
+.o_legal_dms_explorer_details {
+    border: 1px solid #d8dadd;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.o_legal_dms_explorer_tree {
+    overflow: auto;
+    padding: 10px;
+}
+
+.o_legal_dms_explorer_tree_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.o_legal_dms_explorer_tree_item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    position: relative;
+    padding-left: calc(var(--tree-indent, 0px) + 2px);
+    border-radius: 4px;
+}
+
+.o_legal_dms_explorer_tree_item::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--tree-indent, 0px) - 10px);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #d7dde5;
+    opacity: var(--tree-line-opacity, 0);
+}
+
+.o_legal_dms_explorer_tree_item.is-selected {
+    background: #eef3ff;
+    border-radius: 4px;
+}
+
+.o_legal_dms_explorer_toggle,
+.o_legal_dms_explorer_spacer {
+    width: 18px;
+    text-align: center;
+    border: 0;
+    background: transparent;
+    color: #495057;
+    padding: 0;
+}
+
+.o_legal_dms_explorer_node {
+    border: 0;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #1f2937;
+    padding: 2px 4px;
+    border-radius: 4px;
+    width: calc(100% - 24px);
+    text-align: left;
+}
+
+.o_legal_dms_explorer_node.is-active {
+    background: #e2ebff;
+}
+
+.o_legal_dms_explorer_node_icon {
+    font-size: 0.9rem;
+}
+
+.o_legal_dms_explorer_details {
+    padding: 16px;
+}
+
+.o_legal_dms_explorer_heading {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+}
+
+.o_legal_dms_explorer_hint {
+    margin: 0 0 16px;
+    color: #6c757d;
+}
+
+.o_legal_dms_explorer_subheading {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+}
+
+.o_legal_dms_explorer_children {
+    margin: 0;
+    padding-left: 18px;
+}

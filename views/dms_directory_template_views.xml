@@ -1,5 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="view_dms_directory_template_kanban" model="ir.ui.view">
+        <field name="name">dms.directory.template.kanban</field>
+        <field name="model">dms.directory.template</field>
+        <field name="arch" type="xml">
+            <kanban default_order="sequence, id" class="o_kanban_small_column">
+                <field name="name" />
+                <field name="level" />
+                <field name="usage" />
+                <field name="complete_name" />
+                <field name="child_ids" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="o_kanban_record">
+                            <div class="o_kanban_record_headings">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name" />
+                                </strong>
+                            </div>
+                            <div class="mt8 mb8">
+                                <span class="badge rounded-pill text-bg-info me-1">
+                                    <field name="level" />
+                                </span>
+                                <t t-if="record.usage.raw_value == 'clients_root' or record.usage.raw_value == 'archive_root'">
+                                    <span class="badge rounded-pill text-bg-dark">Root</span>
+                                </t>
+                                <t t-elif="record.usage.raw_value == 'cases_container' or record.usage.raw_value == 'subjects_container'">
+                                    <span class="badge rounded-pill text-bg-warning">Auto</span>
+                                </t>
+                                <t t-else="">
+                                    <span class="badge rounded-pill text-bg-secondary">Standard</span>
+                                </t>
+                            </div>
+                            <div class="text-muted small">
+                                <field name="complete_name" />
+                            </div>
+                            <div class="text-muted small mt4">
+                                Children:
+                                <t t-esc="record.child_ids.raw_value.length" />
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_dms_directory_template_search" model="ir.ui.view">
+        <field name="name">dms.directory.template.search</field>
+        <field name="model">dms.directory.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="parent_id" />
+                <field name="level" />
+                <field name="usage" />
+                <filter
+                    name="group_by_parent_id"
+                    string="Parent Folder"
+                    context="{'group_by': 'parent_id'}"
+                />
+            </search>
+        </field>
+    </record>
+
     <record id="view_dms_directory_template_list" model="ir.ui.view">
         <field name="name">dms.directory.template.list</field>
         <field name="model">dms.directory.template</field>
@@ -14,11 +78,52 @@
         </field>
     </record>
 
+    <record id="action_dms_directory_template_children" model="ir.actions.act_window">
+        <field name="name">Subfolders</field>
+        <field name="res_model">dms.directory.template</field>
+        <field name="search_view_id" ref="view_dms_directory_template_search" />
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('parent_id', '=', active_id)]</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_dms_directory_template_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_dms_directory_template_list')})]"
+        />
+    </record>
+
+    <record id="action_dms_directory_template_add_subfolder" model="ir.actions.act_window">
+        <field name="name">Add Subfolder</field>
+        <field name="res_model">dms.directory.template</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="action_dms_directory_template_explorer" model="ir.actions.client">
+        <field name="name">Directory Templates</field>
+        <field name="tag">legal_dms_structure.dms_directory_template_explorer</field>
+    </record>
+
     <record id="view_dms_directory_template_form" model="ir.ui.view">
         <field name="name">dms.directory.template.form</field>
         <field name="model">dms.directory.template</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button
+                        name="%(action_dms_directory_template_children)d"
+                        string="Open Children"
+                        type="action"
+                        class="btn-secondary"
+                    />
+                    <button
+                        name="%(action_dms_directory_template_add_subfolder)d"
+                        string="Add Subfolder"
+                        type="action"
+                        class="oe_highlight"
+                        context="{'default_parent_id': id, 'default_level': level, 'default_usage': 'normal'}"
+                    />
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" />
@@ -28,9 +133,9 @@
                     </div>
                     <group>
                         <group>
-                            <field name="level" />
-                            <field name="usage" />
-                            <field name="parent_id" />
+                            <field name="level" groups="legal_dms_structure.group_legal_dms_admin" />
+                            <field name="usage" groups="legal_dms_structure.group_legal_dms_admin" />
+                            <field name="parent_id" groups="legal_dms_structure.group_legal_dms_admin" />
                         </group>
                         <group>
                             <field name="sequence" />
@@ -44,8 +149,8 @@
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle" />
                                     <field name="name" />
-                                    <field name="level" />
-                                    <field name="usage" />
+                                    <field name="level" groups="legal_dms_structure.group_legal_dms_admin" />
+                                    <field name="usage" groups="legal_dms_structure.group_legal_dms_admin" />
                                     <field name="active" />
                                 </list>
                             </field>
@@ -59,10 +164,14 @@
     <record id="action_dms_directory_template" model="ir.actions.act_window">
         <field name="name">Directory Templates</field>
         <field name="res_model">dms.directory.template</field>
-        <field name="view_mode">list,form</field>
+        <field name="groups_id" eval="[(4, ref('legal_dms_structure.group_legal_dms_admin'))]" />
+        <field name="search_view_id" ref="view_dms_directory_template_search" />
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_group_by_parent_id': 1}</field>
         <field
             name="view_ids"
             eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_dms_directory_template_kanban')}),
             (0, 0, {'view_mode': 'list', 'view_id': ref('view_dms_directory_template_list')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('view_dms_directory_template_form')})]"
         />

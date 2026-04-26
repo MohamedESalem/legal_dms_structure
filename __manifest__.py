@@ -30,6 +30,14 @@
         "data/dms_smart_button_config_data.xml",
         "data/legal_dms_sync_data.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js",
+            "legal_dms_structure/static/src/explorer/dms_directory_explorer_action.xml",
+            "legal_dms_structure/static/src/explorer/dms_directory_explorer_action.css",
+        ],
+    },
     "installable": True,
     "application": False,
+    'sequence': 1,
 }

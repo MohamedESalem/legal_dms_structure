@@ -20,7 +20,7 @@ class ResConfigSettings(models.TransientModel):
 
     def action_open_legal_dms_templates(self):
         return self.env["ir.actions.actions"]._for_xml_id(
-            "legal_dms_structure.action_dms_directory_template"
+            "legal_dms_structure.action_dms_directory_template_explorer"
         )
 
     def action_open_legal_dms_smart_buttons(self):

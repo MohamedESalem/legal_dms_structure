@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="legal_dms_structure.DmsDirectoryExplorerAction">
+        <div class="o_legal_dms_explorer">
+            <div class="o_legal_dms_explorer_toolbar">
+                <button class="btn btn-primary" t-on-click="createRootFolder">New Folder</button>
+                <button class="btn btn-secondary" t-on-click="createSubfolder">New Subfolder</button>
+                <button class="btn btn-secondary" t-on-click="renameSelected">Rename</button>
+                <button
+                    class="btn btn-danger"
+                    t-on-click="deleteSelected"
+                    t-att-disabled="!canDeleteSelected"
+                >
+                    Delete Folder
+                </button>
+            </div>
+
+            <div t-if="state.loading" class="o_legal_dms_explorer_loading">Loading folders...</div>
+            <div t-else="" class="o_legal_dms_explorer_layout">
+                <aside class="o_legal_dms_explorer_tree">
+                    <ul class="o_legal_dms_explorer_tree_list">
+                        <t t-foreach="visibleNodes" t-as="node" t-key="node.id">
+                            <li
+                                class="o_legal_dms_explorer_tree_item"
+                                t-att-class="state.selectedId === node.id ? 'is-selected' : ''"
+                                t-att-style="'--tree-depth: ' + node.depth + '; --tree-indent: ' + (node.depth * 20) + 'px; --tree-line-opacity: ' + (node.depth ? 1 : 0) + ';'"
+                            >
+                                <button
+                                    t-if="node.hasChildren"
+                                    class="o_legal_dms_explorer_toggle"
+                                    t-on-click="() => toggleNode(node.id)"
+                                    t-att-title="node.isExpanded ? 'Collapse' : 'Expand'"
+                                >
+                                    <t t-esc="node.isExpanded ? '▾' : '▸'" />
+                                </button>
+                                <span t-else="" class="o_legal_dms_explorer_spacer">•</span>
+                                <button
+                                    class="o_legal_dms_explorer_node"
+                                    t-att-class="state.selectedId === node.id ? 'is-active' : ''"
+                                    t-on-click="() => selectNode(node.id)"
+                                >
+                                    <span class="o_legal_dms_explorer_node_icon">📁</span>
+                                    <span class="o_legal_dms_explorer_node_name"><t t-esc="node.name" /></span>
+                                </button>
+                            </li>
+                        </t>
+                    </ul>
+                </aside>
+
+                <section class="o_legal_dms_explorer_details">
+                    <t t-if="selectedNode">
+                        <h3 class="o_legal_dms_explorer_heading">
+                            <t t-esc="selectedNode.name" />
+                        </h3>
+                        <p class="o_legal_dms_explorer_hint">
+                            Type: <t t-esc="usageLabel(selectedNode.usage)" />
+                        </p>
+                        <h4 class="o_legal_dms_explorer_subheading">Direct Subfolders</h4>
+                        <ul class="o_legal_dms_explorer_children">
+                            <t t-foreach="selectedChildren" t-as="child" t-key="child.id">
+                                <li>
+                                    <button
+                                        class="btn btn-link p-0"
+                                        t-on-click="() => selectNode(child.id)"
+                                    >
+                                        <t t-esc="child.name" />
+                                    </button>
+                                </li>
+                            </t>
+                            <li t-if="!selectedChildren.length" class="text-muted">
+                                No subfolders yet.
+                            </li>
+                        </ul>
+                    </t>
+                    <t t-else="">
+                        <p class="text-muted">Select a folder from the tree to begin.</p>
+                    </t>
+                </section>
+            </div>
+        </div>
+    </t>
+</templates>
