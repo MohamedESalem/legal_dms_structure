@@ -341,6 +341,14 @@ class LegalDmsService(models.AbstractModel):
     def _template_children(self, template):
         return template.child_ids.filtered("active").sorted(key=lambda item: (item.sequence, item.id))
 
+    def _matter_templates(self, project):
+        templates = self._top_level_templates(self._matter_template_level(project))
+        container_template = self._special_template(self._matter_container_usage(project))
+        container_children = (
+            self._template_children(container_template) if container_template else self._template_model()
+        )
+        return (templates | container_children).sorted(key=lambda item: (item.sequence, item.id))
+
     def _directory_node_from_template(self, template):
         if template.level == "client":
             if template.usage == "cases_container":
@@ -365,6 +373,43 @@ class LegalDmsService(models.AbstractModel):
         for child_template in self._template_children(template):
             self._clone_template_tree(child_template, directory)
         return directory
+
+    def _find_template_child(self, parent_directory, template):
+        by_template = parent_directory.child_directory_ids.filtered(
+            lambda directory, template=template: directory.legal_template_id == template
+        )[:1]
+        if by_template:
+            return by_template
+        return parent_directory.child_directory_ids.filtered(
+            lambda directory, template=template: (
+                (directory.name or "").strip().casefold() == (template.name or "").strip().casefold()
+                and directory.legal_node_type == self._directory_node_from_template(template)
+            )
+        )[:1]
+
+    def _sync_template_tree(self, template, parent_directory):
+        directory = self._find_template_child(parent_directory, template)
+        if directory:
+            self._directory_write(
+                directory,
+                {
+                    "legal_managed": True,
+                    "legal_template_id": template.id,
+                    "legal_node_type": self._directory_node_from_template(template),
+                },
+            )
+            for child_template in self._template_children(template):
+                self._sync_template_tree(child_template, directory)
+            return directory
+        return self._clone_template_tree(template, parent_directory)
+
+    def _sync_partner_template_structure(self, directory):
+        for template in self._top_level_templates("client"):
+            self._sync_template_tree(template, directory)
+
+    def _sync_project_template_structure(self, project, directory):
+        for template in self._matter_templates(project):
+            self._sync_template_tree(template, directory)
 
     def _default_container_name(self, usage):
         template = self._special_template(usage)
@@ -576,6 +621,7 @@ class LegalDmsService(models.AbstractModel):
             return self.env["dms.directory"]
         directory = self._get_record_directory_field(partner) or self._get_live_directory(partner)
         if directory:
+            self._sync_partner_template_structure(directory)
             self._sync_directory_fields(partner)
             self._ensure_client_container(directory, "cases_container")
             self._ensure_client_container(directory, "subjects_container")
@@ -598,6 +644,7 @@ class LegalDmsService(models.AbstractModel):
             self._clone_template_tree(template, directory)
         self._ensure_client_container(directory, "cases_container")
         self._ensure_client_container(directory, "subjects_container")
+        self._sync_partner_template_structure(directory)
         self._record_write(partner, {"dms_directory_id": directory.id})
         self.sync_partner_access(partner)
         return directory
@@ -616,6 +663,7 @@ class LegalDmsService(models.AbstractModel):
             return self.env["dms.directory"]
         directory = self._get_record_directory_field(project) or self._get_live_directory(project)
         if directory:
+            self._sync_project_template_structure(project, directory)
             self._sync_directory_fields(project)
             self.sync_project_access(project)
             return directory
@@ -636,8 +684,7 @@ class LegalDmsService(models.AbstractModel):
                 "res_id": project.id,
             }
         )
-        for template in self._top_level_templates(self._matter_template_level(project)):
-            self._clone_template_tree(template, directory)
+        self._sync_project_template_structure(project, directory)
         self._record_write(project, {"dms_directory_id": directory.id})
         self.sync_project_access(project)
         return directory
@@ -960,6 +1007,8 @@ class LegalDmsService(models.AbstractModel):
             partners = self.env["res.partner"].sudo().search([("parent_id", "=", False)])
             for partner in partners:
                 if not self._record_needs_directory_sync(partner):
+                    self.ensure_partner_directory(partner)
+                    counts["clients_synced"] += 1
                     continue
                 self.ensure_partner_directory(partner)
                 counts["clients"] += 1
@@ -976,6 +1025,8 @@ class LegalDmsService(models.AbstractModel):
                 if project.matter_type == "subject" and not create_subjects:
                     continue
                 if not self._record_needs_directory_sync(project):
+                    self.ensure_project_directory(project)
+                    counts[f"{project.matter_type}_synced"] += 1
                     continue
                 self.ensure_project_directory(project)
                 counts[project.matter_type] += 1

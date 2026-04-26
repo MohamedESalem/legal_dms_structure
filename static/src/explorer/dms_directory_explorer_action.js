@@ -19,6 +19,7 @@ class DmsDirectoryExplorerAction extends Component {
         this.createSubfolder = this.createSubfolder.bind(this);
         this.renameSelected = this.renameSelected.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
+        this.refreshTree = this.refreshTree.bind(this);
         this.state = useState({
             loading: true,
             selectedId: null,
@@ -40,7 +41,9 @@ class DmsDirectoryExplorerAction extends Component {
                 ["name", "parent_id", "level", "usage", "sequence", "complete_name"],
                 { order: "sequence,id" }
             );
-            const normalized = records.map((record) => this._normalizeNode(record));
+            const clientsRoot = records.find((record) => record.usage === "clients_root");
+            const clientsRootId = clientsRoot ? clientsRoot.id : null;
+            const normalized = records.map((record) => this._normalizeNode(record, clientsRootId));
             const { nodesById, childrenByParent } = this._buildTreeIndex(normalized);
             this.state.nodesById = nodesById;
             this.state.childrenByParent = childrenByParent;
@@ -53,11 +56,17 @@ class DmsDirectoryExplorerAction extends Component {
         }
     }
 
-    _normalizeNode(record) {
+    _normalizeNode(record, clientsRootId) {
+        const actualParentId = record.parent_id ? record.parent_id[0] : null;
+        const displayUnderClients =
+            (record.usage === "cases_container" || record.usage === "subjects_container") &&
+            !actualParentId &&
+            clientsRootId;
         return {
             id: record.id,
             name: record.name,
-            parentId: record.parent_id ? record.parent_id[0] : null,
+            parentId: actualParentId,
+            treeParentId: displayUnderClients ? clientsRootId : actualParentId,
             level: record.level,
             usage: record.usage,
             sequence: record.sequence || 0,
@@ -70,7 +79,7 @@ class DmsDirectoryExplorerAction extends Component {
         const childrenByParent = {};
         for (const node of nodes) {
             nodesById[node.id] = node;
-            const key = this._parentKey(node.parentId);
+            const key = this._parentKey(node.treeParentId);
             if (!childrenByParent[key]) {
                 childrenByParent[key] = [];
             }
@@ -166,15 +175,26 @@ class DmsDirectoryExplorerAction extends Component {
             this.notification.add("Select a folder before renaming.", { type: "warning" });
             return;
         }
-        await this.action.doAction({
-            type: "ir.actions.act_window",
-            name: "Rename Folder",
-            res_model: "dms.directory.template",
-            res_id: this.selectedNode.id,
-            views: [[false, "form"]],
-            target: "new",
-        });
-        await this.reloadTree(this.selectedNode?.id || null);
+        const selectedId = this.selectedNode.id;
+        await this.action.doAction(
+            {
+                type: "ir.actions.act_window",
+                name: "Rename Folder",
+                res_model: "dms.directory.template",
+                res_id: selectedId,
+                views: [[false, "form"]],
+                target: "new",
+            },
+            {
+                onClose: async () => {
+                    await this.reloadTree(selectedId);
+                },
+            }
+        );
+    }
+
+    async refreshTree() {
+        await this.reloadTree(this.state.selectedId);
     }
 
     isProtectedNode(node) {
@@ -221,12 +241,12 @@ class DmsDirectoryExplorerAction extends Component {
     }
 
     _nextSelectionAfterDelete(node) {
-        const siblings = this._childrenOfParent(node.parentId).filter((item) => item.id !== node.id);
+        const siblings = this._childrenOfParent(node.treeParentId).filter((item) => item.id !== node.id);
         if (siblings.length) {
             return siblings[0].id;
         }
-        if (node.parentId && this.state.nodesById[node.parentId]) {
-            return node.parentId;
+        if (node.treeParentId && this.state.nodesById[node.treeParentId]) {
+            return node.treeParentId;
         }
         const roots = this._childrenOfParent(null);
         return roots.length ? roots[0].id : null;
@@ -244,6 +264,7 @@ class DmsDirectoryExplorerAction extends Component {
     }
 
     async _openCreateDialog(parentNode) {
+        const selectedIdBeforeOpen = this.state.selectedId;
         const context = {
             default_usage: "normal",
         };
@@ -251,15 +272,21 @@ class DmsDirectoryExplorerAction extends Component {
             context.default_parent_id = parentNode.id;
             context.default_level = parentNode.level;
         }
-        await this.action.doAction({
-            type: "ir.actions.act_window",
-            name: parentNode ? "New Subfolder" : "New Folder",
-            res_model: "dms.directory.template",
-            views: [[false, "form"]],
-            target: "new",
-            context,
-        });
-        await this.reloadTree(this.state.selectedId);
+        await this.action.doAction(
+            {
+                type: "ir.actions.act_window",
+                name: parentNode ? "New Subfolder" : "New Folder",
+                res_model: "dms.directory.template",
+                views: [[false, "form"]],
+                target: "new",
+                context,
+            },
+            {
+                onClose: async () => {
+                    await this.reloadTree(parentNode ? parentNode.id : selectedIdBeforeOpen);
+                },
+            }
+        );
     }
 
     usageLabel(usage) {

@@ -17,11 +17,15 @@ class LegalDmsBackfillWizard(models.TransientModel):
             create_subjects=self.create_subjects,
         )
         message = _(
-            "Created %(clients)s client folders, %(cases)s case folders, and %(subjects)s subject folders."
+            "Created %(clients)s client folders, %(cases)s case folders, and %(subjects)s subject folders. "
+            "Synced %(clients_synced)s existing clients, %(cases_synced)s existing cases, and %(subjects_synced)s existing subjects."
         ) % {
             "clients": counts.get("clients", 0),
             "cases": counts.get("case", 0),
             "subjects": counts.get("subject", 0),
+            "clients_synced": counts.get("clients_synced", 0),
+            "cases_synced": counts.get("case_synced", 0),
+            "subjects_synced": counts.get("subject_synced", 0),
         }
         return {
             "type": "ir.actions.client",
