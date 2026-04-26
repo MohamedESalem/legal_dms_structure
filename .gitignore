@@ -1,5 +1,2 @@
-# Ignore all files inside views/__pycache__/
-/__pycache__/*
-
-# Ignore all files inside models/__pycache__/
-/models/__pycache__/*
+# Ignore all __pycache__
+**/__pycache__/
