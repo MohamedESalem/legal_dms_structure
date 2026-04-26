@@ -1,2 +1,11 @@
-# Ignore all __pycache__
-**/__pycache__/
+# Ignore all __pycache__ folders anywhere in the project
+__pycache__/
+
+# Ignore compiled bytecode files
+*.py[cod]
+
+# Ignore optimized bytecode
+*.pyo
+
+# Ignore Python shared objects (often used on Linux)
+*.so
