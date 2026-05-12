@@ -6,6 +6,10 @@
         <field name="arch" type="xml">
             <form string="Backfill Legal DMS">
                 <group>
+                    <field name="primary_lang_id" />
+                    <field name="init_missing_translations" />
+                </group>
+                <group string="Scope">
                     <field name="create_clients" />
                     <field name="create_cases" />
                     <field name="create_subjects" />

@@ -1,0 +1,950 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* legal_dms_structure
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20250819\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-12 22:44+0000\n"
+"PO-Revision-Date: 2026-05-12 22:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/wizards/legal_dms_backfill_wizard.py:0
+msgid ""
+"%(summary)s Empty name translations were filled from the primary language "
+"where needed."
+msgstr "تم ملء %(summary)s من ترجمات الأسماء الفارغة من اللغة الأساسية عند الحاجة."
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_kanban
+msgid "<span class=\"badge rounded-pill text-bg-dark\">Root</span>"
+msgstr "<span class=\"badge rounded-pill text-bg-dark\">جذر</span>"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_kanban
+msgid "<span class=\"badge rounded-pill text-bg-secondary\">Standard</span>"
+msgstr "<span class=\"badge rounded-pill text-bg-secondary\">قياسي</span>"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_kanban
+msgid "<span class=\"badge rounded-pill text-bg-warning\">Auto</span>"
+msgstr "<span class=\"badge rounded-pill text-bg-warning\">تلقائي</span>"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+msgid "A custom smart button must point to a template directory."
+msgstr "يجب أن يشير الزر الذكي المخصص إلى مجلد قالب."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__active
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: legal_dms_structure
+#: model:ir.actions.act_window,name:legal_dms_structure.action_dms_directory_template_add_subfolder
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_form
+msgid "Add Subfolder"
+msgstr "إضافة مجلد فرعي"
+
+#. module: legal_dms_structure
+#: model:dms.directory.template,name:legal_dms_structure.dms_directory_template_archive_root
+msgid "Archive"
+msgstr "الأرشيف"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_partner_form_legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_project_form_legal_dms_structure
+msgid "Archive DMS"
+msgstr "أرشفة المستندات"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__archive_root
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__usage__archive_root
+msgid "Archive Root"
+msgstr "جذر الأرشيف"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_project_project__dms_archived_directory_id
+#: model:ir.model.fields,field_description:legal_dms_structure.field_res_partner__dms_archived_directory_id
+#: model:ir.model.fields,field_description:legal_dms_structure.field_res_users__dms_archived_directory_id
+msgid "Archived Legal DMS Directory"
+msgstr "مجلد المستندات القانونية المؤرشف"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Auto Container"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid "Backfill Existing Records"
+msgstr "ترحيل السجلات الحالية"
+
+#. module: legal_dms_structure
+#: model:ir.actions.act_window,name:legal_dms_structure.action_legal_dms_backfill_wizard
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_legal_dms_backfill_wizard_form
+msgid "Backfill Legal DMS"
+msgstr "ترحيل المستندات القانونية"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_legal_dms_backfill_wizard_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,help:legal_dms_structure.field_res_config_settings__legal_dms_structure_lang_id
+msgid ""
+"Canonical language for template-based folder names. Falls back to the "
+"company partner language when empty."
+msgstr ""
+"اللغة المرجعية لأسماء المجلدات المستمدة من القوالب. عند الفراغ تُستخدم لغة "
+"شريك الشركة."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__level__case
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__target_model__case
+msgid "Case"
+msgstr "قضية"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__case_node
+msgid "Case Directory"
+msgstr "مجلد القضية"
+
+#. module: legal_dms_structure
+#: model:dms.smart.button.config,name:legal_dms_structure.dms_smart_button_case_root
+msgid "Case Documents"
+msgstr "مستندات القضية"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__case_root
+msgid "Case Root"
+msgstr "جذر القضية"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+#: model:dms.directory.template,name:legal_dms_structure.dms_directory_template_client_cases
+#: model:dms.smart.button.config,name:legal_dms_structure.dms_smart_button_partner_cases
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__create_cases
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__directory_type__cases
+msgid "Cases"
+msgstr "القضايا"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__cases_container
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__usage__cases_container
+msgid "Cases Container"
+msgstr "حاوية القضايا"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+msgid "Cases and subjects containers are only valid on client templates."
+msgstr "حاويات القضايا والمواضيع صالحة فقط في قوالب العملاء."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+msgid "Cases and subjects containers must be top-level client templates."
+msgstr "يجب أن تكون حاويات القضايا والمواضيع من قوالب العملاء من المستوى الأعلى."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__child_ids
+msgid "Child Templates"
+msgstr "القوالب الفرعية"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_form
+msgid "Children"
+msgstr "العناصر الفرعية"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_kanban
+msgid "Children:"
+msgstr "العناصر الفرعية:"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid ""
+"Choose the storage that will host managed client, case, and subject "
+"directories."
+msgstr "اختر التخزين الذي سيستضيف مجلدات العملاء والقضايا والمواضيع المُدارة."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__level__client
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__target_model__partner
+msgid "Client"
+msgstr "عميل"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__client_node
+msgid "Client Directory"
+msgstr "مجلد العميل"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__client_root
+msgid "Client Root"
+msgstr "جذر العميل"
+
+#. module: legal_dms_structure
+#: model:dms.directory.template,name:legal_dms_structure.dms_directory_template_clients_root
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__create_clients
+msgid "Clients"
+msgstr "العملاء"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__clients_root
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__usage__clients_root
+msgid "Clients Root"
+msgstr "جذر العملاء"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Collapse"
+msgstr "طي"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__complete_name
+msgid "Complete Name"
+msgstr "الاسم الكامل"
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_res_config_settings
+msgid "Config Settings"
+msgstr "إعدادات التهيئة"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+msgid ""
+"Configure a Legal DMS storage first from Settings before creating managed "
+"legal folders."
+msgstr "قم بتكوين تخزين المستندات القانونية من الإعدادات أولاً قبل إنشاء المجلدات القانونية المُدارة."
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid ""
+"Configure which legal DMS buttons appear on client and matter forms."
+msgstr "تهيئة أزرار المستندات القانونية التي تظهر في نماذج العملاء والمسائل."
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid ""
+"Create missing legal DMS structures for existing clients, cases, and "
+"subjects without duplicating linked folders."
+msgstr ""
+"إنشاء هياكل المستندات القانونية الناقصة للعملاء والقضايا والمواضيع الحالية "
+"دون تكرار المجلدات المرتبطة."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__create_cases
+msgid "Create or sync case matter folders."
+msgstr "إنشاء أو مزامنة مجلدات مسائل القضايا."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__create_subjects
+msgid "Create or sync subject matter folders."
+msgstr "إنشاء أو مزامنة مجلدات مسائل المواضيع."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__create_clients
+msgid "Create or sync top-level client DMS folders."
+msgstr "إنشاء أو مزامنة مجلدات العملاء الرئيسية."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/wizards/legal_dms_backfill_wizard.py:0
+msgid ""
+"Created %(clients)s client folders, %(cases)s case folders, and %(subjects)s"
+" subject folders. Synced %(clients_synced)s existing clients, "
+"%(cases_synced)s existing cases, and %(subjects_synced)s existing subjects."
+msgstr "تم إنشاء %(clients)s مجلد عميل، و %(cases)s مجلد قضية، و %(subjects)s مجلد موضوع. تمت مزامنة %(clients_synced)s عملاء حاليين، و %(cases_synced)s قضايا حالية، و %(subjects_synced)s مواضيع حالية."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__create_uid
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__create_uid
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__create_uid
+msgid "Created by"
+msgstr "تم إنشاؤه بواسطة"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__create_date
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__create_date
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__create_date
+msgid "Created on"
+msgstr "تم إنشاؤه في"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__directory_type__custom
+msgid "Custom"
+msgstr "مخصص"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_project_project__dms_directory_ids
+msgid "DMS Directories"
+msgstr "مجلدات المستندات"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Delete"
+msgstr "حذف"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Delete \"%s\" and all its subfolders? This action cannot be undone."
+msgstr "حذف \"%s\" وجميع المجلدات الفرعية؟ لا يمكن التراجع عن هذا الإجراء."
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Delete Folder"
+msgstr "حذف المجلد"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Direct Subfolders"
+msgstr "المجلدات الفرعية المباشرة"
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_dms_directory
+msgid "Directory"
+msgstr "مجلد"
+
+#. module: legal_dms_structure
+#: model:ir.actions.act_window,name:legal_dms_structure.action_dms_directory_template
+#: model:ir.actions.client,name:legal_dms_structure.action_dms_directory_template_explorer
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid "Directory Templates"
+msgstr "قوالب المجلدات"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__directory_type
+msgid "Directory Type"
+msgstr "نوع المجلد"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__display_name
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__display_name
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__display_name
+msgid "Display Name"
+msgstr "اسم العرض"
+
+#. module: legal_dms_structure
+#: model:dms.smart.button.config,name:legal_dms_structure.dms_smart_button_partner_root
+msgid "Documents"
+msgstr "المستندات"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Edit"
+msgstr "تحرير"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Edit Folder"
+msgstr "تحرير المجلد"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Expand"
+msgstr "توسيع"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__init_missing_translations
+msgid "Fill Missing Name Translations"
+msgstr "ملء ترجمات الأسماء الناقصة"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Folder deleted successfully."
+msgstr "تم حذف المجلد بنجاح."
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid ""
+"Folder names created from templates use this language so structures stay "
+"stable when users switch UI language."
+msgstr ""
+"تستخدم أسماء المجلدات المُنشأة من القوالب هذه اللغة لتبقى الهياكل ثابتة عند "
+"تغيير لغة الواجهة."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__id
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__id
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__id
+msgid "ID"
+msgstr "معرّف"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__init_missing_translations
+msgid ""
+"If enabled, copies the primary language folder and button names into other "
+"installed languages only where a translation is still empty."
+msgstr ""
+"عند التفعيل، ينسخ أسماء المجلدات والأزرار من اللغة الأساسية إلى اللغات "
+"الأخرى المثبتة فقط حيث تكون الترجمة فارغة."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__primary_lang_id
+msgid ""
+"Language context used while creating or syncing folders, and optional seed "
+"for missing translations."
+msgstr ""
+"سياق اللغة المستخدم أثناء إنشاء المجلدات أو مزامنتها، وبذرة اختيارية "
+"للترجمات الناقصة."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__write_uid
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__write_uid
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__write_date
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__write_date
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:res.groups,name:legal_dms_structure.group_legal_dms_lawyer
+msgid "Lawyer"
+msgstr "محامٍ"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory__legal_archived
+msgid "Legal Archived"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_res_partner
+msgid "Legal Case Partner"
+msgstr "جهة الاتصال"
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_project_project
+msgid "Legal Case Project"
+msgstr "المشروع"
+
+#. module: legal_dms_structure
+#: model:ir.module.category,name:legal_dms_structure.category_legal_dms_security
+msgid "Legal DMS"
+msgstr "المستندات القانونية"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+msgid "Legal DMS %(prefix)s Access #%(id)s"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:res.groups,name:legal_dms_structure.group_legal_dms_admin
+msgid "Legal DMS Admin"
+msgstr "مسؤول المستندات القانونية"
+
+#. module: legal_dms_structure
+#: model:dms.access.group,name:legal_dms_structure.dms_access_group_legal_dms_admin
+msgid "Legal DMS Admin Access"
+msgstr "صلاحيات مدير المستندات القانونية"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/wizards/legal_dms_backfill_wizard.py:0
+msgid "Legal DMS Backfill"
+msgstr ""
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/wizards/legal_dms_backfill_wizard.py:0
+msgid "Legal DMS Backfill Complete"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_legal_dms_backfill_wizard
+msgid "Legal DMS Backfill Wizard"
+msgstr "معالج ترحيل المستندات القانونية"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_project_project__dms_directory_id
+#: model:ir.model.fields,field_description:legal_dms_structure.field_res_partner__dms_directory_id
+#: model:ir.model.fields,field_description:legal_dms_structure.field_res_users__dms_directory_id
+msgid "Legal DMS Directory"
+msgstr "مجلد المستندات القانونية"
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_dms_directory_template
+msgid "Legal DMS Directory Template"
+msgstr "قالب مجلد المستندات القانونية"
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_legal_dms_service
+msgid "Legal DMS Service"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model,name:legal_dms_structure.model_dms_smart_button_config
+msgid "Legal DMS Smart Button Configuration"
+msgstr "إعداد زر المستندات الذكي القانوني"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_res_config_settings__legal_dms_storage_id
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid "Legal DMS Storage"
+msgstr "تخزين المستندات القانونية"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid "Legal DMS Structure"
+msgstr "هيكل المستندات القانونية"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_res_config_settings__legal_dms_structure_lang_id
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid "Legal DMS Structure Language"
+msgstr "لغة هيكل المستندات"
+
+#. module: legal_dms_structure
+#: model:ir.module.category,description:legal_dms_structure.category_legal_dms_security
+msgid "Legal DMS structure governance and access roles."
+msgstr "حوكمة هيكل المستندات القانونية وأدوار الوصول."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory__legal_managed
+msgid "Legal Managed"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory__legal_node_type
+msgid "Legal Node Type"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory__legal_record_id
+msgid "Legal Record"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory__legal_record_model
+msgid "Legal Record Model"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory__legal_template_id
+msgid "Legal Template"
+msgstr ""
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/project_project.py:0
+msgid ""
+"Legal matters with linked DMS structures cannot be deleted. Archive the DMS "
+"tree instead."
+msgstr ""
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/res_partner.py:0
+msgid ""
+"Legal records with linked DMS structures cannot be deleted. Archive the DMS "
+"tree instead."
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__level
+msgid "Level"
+msgstr "المستوى"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Loading folders..."
+msgstr "جاري تحميل المجلدات..."
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid "Maintain the default directory templates applied to new legal records."
+msgstr ""
+"إدارة قوالب المجلدات الافتراضية المطبقة على السجلات القانونية الجديدة."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+msgid ""
+"Managed legal directory structures are created automatically. Manual "
+"directory creation inside them is not allowed."
+msgstr ""
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+msgid ""
+"Managed legal directory structures cannot be deleted manually. Use the "
+"archive flow instead."
+msgstr ""
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+msgid ""
+"Managed legal directory structures cannot be renamed, moved, or reconfigured"
+" manually."
+msgstr ""
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+msgid "Matter"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__name
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "New Folder"
+msgstr "مجلد جديد"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "New Subfolder"
+msgstr "مجلد فرعي جديد"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "No subfolders yet."
+msgstr "لا توجد مجلدات فرعية بعد."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__usage__normal
+msgid "Normal"
+msgstr "عادي"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+msgid "Only custom smart buttons can point to a template directory."
+msgstr "فقط الأزرار الذكية المخصصة يمكن أن تشير إلى مجلد قالب."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+msgid "Only one active template can use the '%s' system usage."
+msgstr "يمكن لقالب نشط واحد فقط استخدام استخدام النظام '%s'."
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_form
+msgid "Open Children"
+msgstr "فتح العناصر الفرعية"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_dms_directory_template_search
+msgid "Parent Folder"
+msgstr "المجلد الأصل"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__parent_path
+msgid "Parent Path"
+msgstr "مسار الأصل"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__parent_id
+msgid "Parent Template"
+msgstr "القالب الأصل"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/wizards/legal_dms_backfill_wizard.py:0
+msgid "Please select a valid language."
+msgstr "يرجى تحديد لغة صالحة."
+
+#. module: legal_dms_structure
+#: model:res.groups,name:legal_dms_structure.group_legal_dms_portal
+msgid "Portal"
+msgstr "بوابة"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__primary_lang_id
+msgid "Primary Language for This Run"
+msgstr "اللغة الأساسية لهذا التشغيل"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Refresh"
+msgstr ""
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_partner_form_legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_project_form_legal_dms_structure
+msgid "Restore DMS"
+msgstr ""
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__directory_type__root
+msgid "Root"
+msgstr "الجذر"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_legal_dms_backfill_wizard_form
+msgid "Run Backfill"
+msgstr "تشغيل الترحيل"
+
+#. module: legal_dms_structure
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.view_legal_dms_backfill_wizard_form
+msgid "Scope"
+msgstr "النطاق"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Select a folder before creating a subfolder."
+msgstr "حدد مجلدًا قبل إنشاء مجلد فرعي."
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Select a folder before deleting."
+msgstr "حدد مجلدًا قبل الحذف."
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Select a folder before renaming."
+msgstr "حدد مجلدًا قبل إعادة التسمية."
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Select a folder from the tree to begin."
+msgstr "حدد مجلدًا من الشجرة لبدء العمل."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__sequence
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__sequence
+msgid "Sequence"
+msgstr "التسلسل"
+
+#. module: legal_dms_structure
+#: model:ir.actions.act_window,name:legal_dms_structure.action_dms_smart_button_config
+#: model_terms:ir.ui.view,arch_db:legal_dms_structure.res_config_settings_view_form_legal_dms_structure
+msgid "Smart Buttons"
+msgstr "أزرار ذكية"
+
+#. module: legal_dms_structure
+#: model:res.groups,name:legal_dms_structure.group_legal_dms_staff
+msgid "Staff"
+msgstr "موظف"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Standard"
+msgstr "قياسي"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,help:legal_dms_structure.field_res_config_settings__legal_dms_storage_id
+msgid "Storage used for managed legal DMS structures."
+msgstr "التخزين المستخدم لهياكل المستندات القانونية المُدارة."
+
+#. module: legal_dms_structure
+#: model:ir.actions.act_window,name:legal_dms_structure.action_dms_directory_template_children
+msgid "Subfolders"
+msgstr "المجلدات الفرعية"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__level__subject
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__target_model__subject
+msgid "Subject"
+msgstr "موضوع"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__subject_node
+msgid "Subject Directory"
+msgstr "مجلد الموضوع"
+
+#. module: legal_dms_structure
+#: model:dms.smart.button.config,name:legal_dms_structure.dms_smart_button_subject_root
+msgid "Subject Documents"
+msgstr "مستندات الموضوع"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__subject_root
+msgid "Subject Root"
+msgstr "جذر الموضوع"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+#: model:dms.directory.template,name:legal_dms_structure.dms_directory_template_client_subjects
+#: model:dms.smart.button.config,name:legal_dms_structure.dms_smart_button_partner_subjects
+#: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__create_subjects
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__directory_type__subjects
+msgid "Subjects"
+msgstr "الموضوعات"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory.py:0
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__subjects_container
+#: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__usage__subjects_container
+msgid "Subjects Container"
+msgstr "حاوية المواضيع"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "System Root"
+msgstr "الجذر النظامي"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+msgid "System root template nodes cannot have a parent template."
+msgstr "لا يمكن لعقد قوالب الجذر النظامي أن يكون لها قالب أصل."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+msgid "System root template nodes must use the client level."
+msgstr "يجب على عقد قوالب الجذر النظامي استخدام مستوى العميل."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__target_model
+msgid "Target Model"
+msgstr "النموذج الهدف"
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_smart_button_config__template_id
+msgid "Template Directory"
+msgstr "مجلد القالب"
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_directory_template.py:0
+msgid "Template children must stay inside same level."
+msgstr "يجب أن تبقى القوالب الفرعية داخل نفس المستوى."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+msgid "The requested legal DMS folder is not available."
+msgstr "مجلد المستندات القانونية المطلوب غير متاح."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+msgid "The requested smart button configuration no longer exists."
+msgstr "الزر الذكي المطلوب لم يعد موجودًا."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/dms_smart_button_config.py:0
+msgid "The selected template directory does not match the target model."
+msgstr "مجلد القالب المحدد لا يتطابق مع النموذج الهدف."
+
+#. module: legal_dms_structure
+#. odoo-python
+#: code:addons/legal_dms_structure/models/legal_dms_service.py:0
+msgid ""
+"This folder does not exist on the current record. Template changes only "
+"apply to newly created records."
+msgstr "هذا المجلد غير موجود في السجل الحالي. تغييرات القالب تنطبق فقط على السجلات المنشأة حديثًا."
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "This folder is system-protected and cannot be deleted."
+msgstr "هذا المجلد محمي من قبل النظام ولا يمكن حذفه."
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Type:"
+msgstr "النوع:"
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Unable to delete this folder."
+msgstr "غير قادر على حذف هذا المجلد."
+
+#. module: legal_dms_structure
+#. odoo-javascript
+#: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
+msgid "Unable to load directory tree."
+msgstr "غير قادر على تحميل شجرة المجلدات."
+
+#. module: legal_dms_structure
+#: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__usage
+msgid "Usage"
+msgstr "الاستخدام"

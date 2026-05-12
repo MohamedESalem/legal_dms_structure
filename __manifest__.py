@@ -39,5 +39,5 @@
     },
     "installable": True,
     "application": False,
-    'sequence': 1,
+    "sequence": 1,
 }

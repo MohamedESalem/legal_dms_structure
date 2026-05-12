@@ -6,6 +6,19 @@ class ProjectProject(models.Model):
     _name = "project.project"
     _inherit = ["project.project", "dms.field.mixin"]
 
+    @api.model
+    def get_view(self, view_id=None, view_type="form", **options):
+        result = super().get_view(view_id, view_type, **options)
+        if (
+            view_type == "form"
+            and result.get("arch")
+            and "dms_directory_id" in result["arch"]
+        ):
+            result["arch"] = self.env["legal.dms.service"].inject_smart_buttons(
+                result["arch"], "project.project"
+            )
+        return result
+
     dms_directory_id = fields.Many2one(
         comodel_name="dms.directory",
         string="Legal DMS Directory",

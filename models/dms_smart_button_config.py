@@ -7,12 +7,12 @@ class DmsSmartButtonConfig(models.Model):
     _description = "Legal DMS Smart Button Configuration"
     _order = "target_model, sequence, id"
 
-    name = fields.Char(required=True)
+    name = fields.Char(required=True, translate=True)
     target_model = fields.Selection(
         selection=[
-            ("partner", "Client"),
-            ("case", "Case"),
-            ("subject", "Subject"),
+            ("partner", _("Client")),
+            ("case", _("Case")),
+            ("subject", _("Subject")),
         ],
         required=True,
         default="partner",
@@ -20,10 +20,10 @@ class DmsSmartButtonConfig(models.Model):
     )
     directory_type = fields.Selection(
         selection=[
-            ("root", "Root"),
-            ("cases", "Cases"),
-            ("subjects", "Subjects"),
-            ("custom", "Custom"),
+            ("root", _("Root")),
+            ("cases", _("Cases")),
+            ("subjects", _("Subjects")),
+            ("custom", _("Custom")),
         ],
         required=True,
         default="root",

@@ -15,6 +15,13 @@
                         <field name="legal_dms_storage_id" options="{'no_create': True}" />
                     </setting>
                     <setting
+                        id="legal_dms_structure_lang_setting"
+                        string="Legal DMS Structure Language"
+                        help="Folder names created from templates use this language so structures stay stable when users switch UI language."
+                    >
+                        <field name="legal_dms_structure_lang_id" options="{'no_create': True}" />
+                    </setting>
+                    <setting
                         id="legal_dms_templates_setting"
                         string="Directory Templates"
                         help="Maintain the default directory templates applied to new legal records."

@@ -47,8 +47,45 @@ class LegalDmsService(models.AbstractModel):
             tracking_disable=True,
         )
 
+    def _get_structure_lang_code(self):
+        """Language used for canonical template labels and directory naming."""
+        forced = self.env.context.get("legal_dms_force_structure_lang")
+        if forced:
+            return forced
+        icp = self.env["ir.config_parameter"].sudo()
+        code = (icp.get_param("legal_dms_structure.structure_lang_code") or "").strip()
+        if code:
+            lang = self.env["res.lang"].sudo().search(
+                [("code", "=", code), ("active", "=", True)], limit=1
+            )
+            if lang:
+                return code
+        lang_id = icp.get_param("legal_dms_structure.structure_lang_id")
+        if lang_id:
+            lang = self.env["res.lang"].sudo().browse(int(lang_id)).exists()
+            if lang and lang.code:
+                return lang.code
+        company_lang = self.env.company.partner_id.lang
+        if company_lang:
+            return company_lang
+        return "en_US"
+
     def _template_model(self):
-        return self.env["dms.directory.template"].sudo()
+        return self.env["dms.directory.template"].sudo().with_context(
+            lang=self._get_structure_lang_code()
+        )
+
+    def _template_folder_label(self, template):
+        """Template label resolved in the structure language (stable for DMS paths)."""
+        lang = self._get_structure_lang_code()
+        return (
+            self.env["dms.directory.template"]
+            .sudo()
+            .with_context(lang=lang)
+            .browse(template.id)
+            .name
+            or ""
+        )
 
     def _special_template(self, usage):
         return self._template_model().search(
@@ -255,11 +292,10 @@ class LegalDmsService(models.AbstractModel):
         }
 
     def _record_access_group_name(self, record):
-        prefix = _("Client") if record._name == "res.partner" else _("Matter")
-        return _("Legal DMS %(prefix)s Access #%(id)s") % {
-            "prefix": prefix,
-            "id": record.id,
-        }
+        # dms.access.group.name is translate=True with a UNIQUE on the whole jsonb value.
+        # Human-readable labels collide with other rows (and with legacy data) once
+        # translations merge. Use a stable, globally unique ASCII key per linked record.
+        return "legal_dms:%s:%s" % (record._name, record.id)
 
     def _get_record_access_group(self, record):
         return self._access_group_model().search(
@@ -269,8 +305,9 @@ class LegalDmsService(models.AbstractModel):
 
     def _ensure_record_access_group(self, record, explicit_users):
         admin_group = self._get_admin_group()
+        label = self._record_access_group_name(record)
         values = {
-            "name": self._record_access_group_name(record),
+            "name": label,
             "perm_create": True,
             "perm_write": True,
             "perm_unlink": True,
@@ -278,11 +315,25 @@ class LegalDmsService(models.AbstractModel):
             "explicit_user_ids": [Command.set(explicit_users.ids)],
             "dms_field_ref": f"{record._name},{record.id}",
         }
+        # Write under en_US so translate=True does not treat the value as ar_001 only.
+        Group = self.env["dms.access.group"].sudo().with_context(
+            tracking_disable=True,
+            lang="en_US",
+        )
         group = self._get_record_access_group(record)
         if group:
-            group.write(values)
-            return group
-        return self._access_group_model().create(values)
+            access_group = Group.browse(group.id)
+            access_group.write(values)
+        else:
+            access_group = Group.create(values)
+        # Align every installed language to the same technical label so jsonb stays unique.
+        codes = [code for code, _ in self.env["res.lang"].sudo().get_installed()]
+        if codes:
+            translations = {code: label for code in codes}
+            access_group.sudo().update_field_translations(
+                "name", translations, source_lang="en_US"
+            )
+        return access_group
 
     def _get_project_assignees(self, project):
         users = self.env["res.users"]
@@ -361,9 +412,10 @@ class LegalDmsService(models.AbstractModel):
         return "subject_node"
 
     def _clone_template_tree(self, template, parent_directory):
+        label = self._template_folder_label(template)
         directory = self._directory_create(
             {
-                "name": self._child_unique_name(parent_directory, template.name),
+                "name": self._child_unique_name(parent_directory, label),
                 "parent_id": parent_directory.id,
                 "legal_managed": True,
                 "legal_template_id": template.id,
@@ -380,9 +432,10 @@ class LegalDmsService(models.AbstractModel):
         )[:1]
         if by_template:
             return by_template
+        tpl_label = self._template_folder_label(template)
         return parent_directory.child_directory_ids.filtered(
-            lambda directory, template=template: (
-                (directory.name or "").strip().casefold() == (template.name or "").strip().casefold()
+            lambda directory, tpl_label=tpl_label: (
+                (directory.name or "").strip().casefold() == (tpl_label or "").strip().casefold()
                 and directory.legal_node_type == self._directory_node_from_template(template)
             )
         )[:1]
@@ -414,8 +467,14 @@ class LegalDmsService(models.AbstractModel):
     def _default_container_name(self, usage):
         template = self._special_template(usage)
         if template:
-            return template.name
-        return _("Cases") if usage == "cases_container" else _("Subjects")
+            return self._template_folder_label(template)
+        lang = self._get_structure_lang_code()
+        svc_env = self.with_context(lang=lang)
+        return (
+            svc_env.env._("Cases")
+            if usage == "cases_container"
+            else svc_env.env._("Subjects")
+        )
 
     def _ensure_client_container(self, client_directory, usage):
         node_type = usage
@@ -959,13 +1018,16 @@ class LegalDmsService(models.AbstractModel):
         return attributes
 
     def inject_smart_buttons(self, arch, model_name):
+        document = etree.fromstring(arch.encode())
+        for header in document.xpath("//header"):
+            for button in header.xpath("./button[@name='action_open_legal_dms_button']"):
+                header.remove(button)
         configs = self._get_smart_button_configs(model_name)
         if not configs:
-            return arch
-        document = etree.fromstring(arch.encode())
+            return etree.tostring(document, encoding="unicode")
         headers = document.xpath("//header")
         if not headers:
-            return arch
+            return etree.tostring(document, encoding="unicode")
         header = headers[0]
         if model_name == "project.project" and not document.xpath("//field[@name='matter_type']"):
             sheet = document.xpath("//sheet")
@@ -975,31 +1037,43 @@ class LegalDmsService(models.AbstractModel):
             header.append(etree.Element("button", **self._smart_button_attributes(model_name, config)))
         return etree.tostring(document, encoding="unicode")
 
-    def _smart_button_extension_arch(self, model_name):
-        document = etree.Element("data")
-        if model_name == "project.project":
-            etree.SubElement(
-                document,
-                "xpath",
-                expr="//sheet[1]",
-                position="inside",
-            ).append(etree.Element("field", name="matter_type", invisible="1"))
-        xpath = etree.SubElement(
-            document,
-            "xpath",
-            expr="//header",
-            position="inside",
-        )
-        for config in self._get_smart_button_configs(model_name):
-            etree.SubElement(xpath, "button", **self._smart_button_attributes(model_name, config))
-        return etree.tostring(document, encoding="unicode")
-
     @api.model
     def sync_smart_button_views(self):
-        for model_name, spec in self._SMART_BUTTON_VIEW_SPECS.items():
-            self.env.ref(spec["view_xmlid"]).sudo().write(
-                {"arch": self._smart_button_extension_arch(model_name)}
-            )
+        """Reset smart-button extension views; buttons are injected at runtime in get_view."""
+        empty = "<data/>"
+        for spec in self._SMART_BUTTON_VIEW_SPECS.values():
+            view = self.env.ref(spec["view_xmlid"], raise_if_not_found=False)
+            if view and (view.arch_db or "").strip() != empty:
+                view.sudo().write({"arch": empty})
+        try:
+            self.env.registry.clear_cache("templates")
+        except AttributeError:
+            pass
+
+    @api.model
+    def init_legal_dms_translations_from_lang(self, source_lang_code):
+        """Fill empty name translations using source_lang_code as seed (idempotent)."""
+        valid = {code for code, _ in self.env["res.lang"].get_installed()}
+        if source_lang_code not in valid:
+            return
+        for model_name in ("dms.directory.template", "dms.smart.button.config"):
+            for rec in self.env[model_name].sudo().search([]):
+                reference = rec.with_context(lang=source_lang_code).name
+                if not reference:
+                    continue
+                translations, _ctx = rec.get_field_translations("name")
+                updates = {}
+                for term in translations:
+                    lang = term["lang"]
+                    if lang == source_lang_code:
+                        continue
+                    value = (term.get("value") or "").strip()
+                    if not value:
+                        updates[lang] = reference
+                if updates:
+                    rec.update_field_translations(
+                        "name", updates, source_lang=source_lang_code
+                    )
 
     def backfill(self, create_clients=True, create_cases=True, create_subjects=True):
         counts = defaultdict(int)

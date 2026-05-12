@@ -2,6 +2,8 @@
 
 import { registry } from "@web/core/registry";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { _t } from "@web/core/l10n/translation";
+import { sprintf } from "@web/core/utils/strings";
 import { useService } from "@web/core/utils/hooks";
 import { Component, onWillStart, useState } from "@odoo/owl";
 
@@ -20,6 +22,18 @@ class DmsDirectoryExplorerAction extends Component {
         this.editSelected = this.editSelected.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.refreshTree = this.refreshTree.bind(this);
+        this.labels = {
+            newFolder: _t("New Folder"),
+            newSubfolder: _t("New Subfolder"),
+            edit: _t("Edit"),
+            refresh: _t("Refresh"),
+            deleteFolder: _t("Delete Folder"),
+            loadingFolders: _t("Loading folders..."),
+            typePrefix: _t("Type:"),
+            directSubfolders: _t("Direct Subfolders"),
+            noSubfoldersYet: _t("No subfolders yet."),
+            selectFolderHint: _t("Select a folder from the tree to begin."),
+        };
         this.state = useState({
             loading: true,
             selectedId: null,
@@ -50,7 +64,7 @@ class DmsDirectoryExplorerAction extends Component {
             this.state.expandedById = this._nextExpandedState(childrenByParent, this.state.expandedById);
             this.state.selectedId = this._resolveSelection(preferredSelectedId);
         } catch {
-            this.notification.add("Unable to load directory tree.", { type: "danger" });
+            this.notification.add(_t("Unable to load directory tree."), { type: "danger" });
         } finally {
             this.state.loading = false;
         }
@@ -164,7 +178,7 @@ class DmsDirectoryExplorerAction extends Component {
 
     async createSubfolder() {
         if (!this.selectedNode) {
-            this.notification.add("Select a folder before creating a subfolder.", { type: "warning" });
+            this.notification.add(_t("Select a folder before creating a subfolder."), { type: "warning" });
             return;
         }
         await this._openCreateDialog(this.selectedNode);
@@ -172,14 +186,14 @@ class DmsDirectoryExplorerAction extends Component {
 
     async editSelected() {
         if (!this.selectedNode) {
-            this.notification.add("Select a folder before renaming.", { type: "warning" });
+            this.notification.add(_t("Select a folder before renaming."), { type: "warning" });
             return;
         }
         const selectedId = this.selectedNode.id;
         await this.action.doAction(
             {
                 type: "ir.actions.act_window",
-                name: "Edit Folder",
+                name: _t("Edit Folder"),
                 res_model: "dms.directory.template",
                 res_id: selectedId,
                 views: [[false, "form"]],
@@ -213,30 +227,33 @@ class DmsDirectoryExplorerAction extends Component {
     async deleteSelected() {
         const node = this.selectedNode;
         if (!node) {
-            this.notification.add("Select a folder before deleting.", { type: "warning" });
+            this.notification.add(_t("Select a folder before deleting."), { type: "warning" });
             return;
         }
         if (this.isProtectedNode(node)) {
-            this.notification.add("This folder is system-protected and cannot be deleted.", {
+            this.notification.add(_t("This folder is system-protected and cannot be deleted."), {
                 type: "warning",
             });
             return;
         }
         this.dialog.add(ConfirmationDialog, {
-            title: "Delete Folder",
-            body: `Delete "${node.name}" and all its subfolders? This action cannot be undone.`,
-            confirmLabel: "Delete",
+            title: _t("Delete Folder"),
+            body: sprintf(
+                _t('Delete "%s" and all its subfolders? This action cannot be undone.'),
+                node.name
+            ),
+            confirmLabel: _t("Delete"),
             confirmClass: "btn-danger",
             confirm: async () => {
                 try {
                     await this.orm.unlink("dms.directory.template", [node.id]);
                     await this.reloadTree(this._nextSelectionAfterDelete(node));
-                    this.notification.add("Folder deleted successfully.", { type: "success" });
+                    this.notification.add(_t("Folder deleted successfully."), { type: "success" });
                 } catch {
-                    this.notification.add("Unable to delete this folder.", { type: "danger" });
+                    this.notification.add(_t("Unable to delete this folder."), { type: "danger" });
                 }
             },
-            cancelLabel: "Cancel",
+            cancelLabel: _t("Cancel"),
         });
     }
 
@@ -275,7 +292,7 @@ class DmsDirectoryExplorerAction extends Component {
         await this.action.doAction(
             {
                 type: "ir.actions.act_window",
-                name: parentNode ? "New Subfolder" : "New Folder",
+                name: parentNode ? _t("New Subfolder") : _t("New Folder"),
                 res_model: "dms.directory.template",
                 views: [[false, "form"]],
                 target: "new",
@@ -291,12 +308,16 @@ class DmsDirectoryExplorerAction extends Component {
 
     usageLabel(usage) {
         if (usage === "clients_root" || usage === "archive_root") {
-            return "System Root";
+            return _t("System Root");
         }
         if (usage === "cases_container" || usage === "subjects_container") {
-            return "Auto Container";
+            return _t("Auto Container");
         }
-        return "Standard";
+        return _t("Standard");
+    }
+
+    expandTitle(expanded) {
+        return expanded ? _t("Collapse") : _t("Expand");
     }
 }
 

@@ -3,20 +3,19 @@
     <t t-name="legal_dms_structure.DmsDirectoryExplorerAction">
         <div class="o_legal_dms_explorer">
             <div class="o_legal_dms_explorer_toolbar">
-                <button class="btn btn-primary" t-on-click="createRootFolder">New Folder</button>
-                <button class="btn btn-primary" t-on-click="createSubfolder">New Subfolder</button>
-                <button class="btn btn-secondary" t-on-click="editSelected">Edit</button>
-                <button class="btn btn-secondary" t-on-click="refreshTree">Refresh</button>
+                <button class="btn btn-primary" t-on-click="createRootFolder" t-out="labels.newFolder"/>
+                <button class="btn btn-primary" t-on-click="createSubfolder" t-out="labels.newSubfolder"/>
+                <button class="btn btn-secondary" t-on-click="editSelected" t-out="labels.edit"/>
+                <button class="btn btn-secondary" t-on-click="refreshTree" t-out="labels.refresh"/>
                 <button
                     class="btn btn-danger"
                     t-on-click="deleteSelected"
                     t-att-disabled="!canDeleteSelected"
-                >
-                    Delete Folder
-                </button>
+                    t-out="labels.deleteFolder"
+                />
             </div>
 
-            <div t-if="state.loading" class="o_legal_dms_explorer_loading">Loading folders...</div>
+            <div t-if="state.loading" class="o_legal_dms_explorer_loading" t-out="labels.loadingFolders"/>
             <div t-else="" class="o_legal_dms_explorer_layout">
                 <aside class="o_legal_dms_explorer_tree">
                     <ul class="o_legal_dms_explorer_tree_list">
@@ -30,7 +29,7 @@
                                     t-if="node.hasChildren"
                                     class="o_legal_dms_explorer_toggle"
                                     t-on-click="() => toggleNode(node.id)"
-                                    t-att-title="node.isExpanded ? 'Collapse' : 'Expand'"
+                                    t-att-title="expandTitle(node.isExpanded)"
                                 >
                                     <t t-esc="node.isExpanded ? '▾' : '▸'" />
                                 </button>
@@ -54,9 +53,9 @@
                             <t t-esc="selectedNode.name" />
                         </h3>
                         <p class="o_legal_dms_explorer_hint">
-                            Type: <t t-esc="usageLabel(selectedNode.usage)" />
+                            <t t-out="labels.typePrefix"/> <t t-esc="usageLabel(selectedNode.usage)" />
                         </p>
-                        <h4 class="o_legal_dms_explorer_subheading">Direct Subfolders</h4>
+                        <h4 class="o_legal_dms_explorer_subheading" t-out="labels.directSubfolders"/>
                         <ul class="o_legal_dms_explorer_children">
                             <t t-foreach="selectedChildren" t-as="child" t-key="child.id">
                                 <li>
@@ -68,13 +67,11 @@
                                     </button>
                                 </li>
                             </t>
-                            <li t-if="!selectedChildren.length" class="text-muted">
-                                No subfolders yet.
-                            </li>
+                            <li t-if="!selectedChildren.length" class="text-muted" t-out="labels.noSubfoldersYet"/>
                         </ul>
                     </t>
                     <t t-else="">
-                        <p class="text-muted">Select a folder from the tree to begin.</p>
+                        <p class="text-muted" t-out="labels.selectFolderHint"/>
                     </t>
                 </section>
             </div>

@@ -10,14 +10,14 @@ class DmsDirectoryTemplate(models.Model):
     _parent_name = "parent_id"
     _rec_name = "complete_name"
 
-    name = fields.Char(required=True)
+    name = fields.Char(required=True, translate=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
     level = fields.Selection(
         selection=[
-            ("client", "Client"),
-            ("case", "Case"),
-            ("subject", "Subject"),
+            ("client", _("Client")),
+            ("case", _("Case")),
+            ("subject", _("Subject")),
         ],
         required=True,
         default="client",
@@ -25,11 +25,11 @@ class DmsDirectoryTemplate(models.Model):
     )
     usage = fields.Selection(
         selection=[
-            ("normal", "Normal"),
-            ("clients_root", "Clients Root"),
-            ("archive_root", "Archive Root"),
-            ("cases_container", "Cases Container"),
-            ("subjects_container", "Subjects Container"),
+            ("normal", _("Normal")),
+            ("clients_root", _("Clients Root")),
+            ("archive_root", _("Archive Root")),
+            ("cases_container", _("Cases Container")),
+            ("subjects_container", _("Subjects Container")),
         ],
         required=True,
         default="normal",
@@ -49,6 +49,7 @@ class DmsDirectoryTemplate(models.Model):
     )
     complete_name = fields.Char(compute="_compute_complete_name", store=True, recursive=True)
 
+    @api.depends_context("lang")
     @api.depends("name", "parent_id.complete_name")
     def _compute_complete_name(self):
         for template in self:
@@ -96,7 +97,10 @@ class DmsDirectoryTemplate(models.Model):
                     limit=1,
                 )
                 if duplicate:
+                    usage_labels = dict(
+                        self.fields_get(allfields=["usage"])["usage"]["selection"]
+                    )
                     raise ValidationError(
                         _("Only one active template can use the '%s' system usage.")
-                        % dict(self._fields["usage"].selection).get(template.usage)
+                        % usage_labels.get(template.usage, template.usage)
                     )
