@@ -897,14 +897,11 @@ class LegalDmsService(models.AbstractModel):
             return self.env["dms.directory"]
         if config.directory_type == "root":
             return directory
+        client_root = directory.sudo()
         if config.directory_type == "cases":
-            return directory.child_directory_ids.filtered(
-                lambda item: item.legal_node_type == "cases_container"
-            )[:1]
+            return self._ensure_client_container(client_root, "cases_container")
         if config.directory_type == "subjects":
-            return directory.child_directory_ids.filtered(
-                lambda item: item.legal_node_type == "subjects_container"
-            )[:1]
+            return self._ensure_client_container(client_root, "subjects_container")
         return self.env["dms.directory"].sudo().search(
             [
                 ("id", "child_of", directory.id),
@@ -924,13 +921,13 @@ class LegalDmsService(models.AbstractModel):
             or self._get_record_archived_directory_field(project.partner_id)
         )
         if config.directory_type == "cases" and client_directory:
-            return client_directory.child_directory_ids.filtered(
-                lambda item: item.legal_node_type == "cases_container"
-            )[:1]
+            return self._ensure_client_container(
+                client_directory.sudo(), "cases_container"
+            )
         if config.directory_type == "subjects" and client_directory:
-            return client_directory.child_directory_ids.filtered(
-                lambda item: item.legal_node_type == "subjects_container"
-            )[:1]
+            return self._ensure_client_container(
+                client_directory.sudo(), "subjects_container"
+            )
         directory = (
             self._get_record_directory_field(project)
             or self._get_record_archived_directory_field(project)
