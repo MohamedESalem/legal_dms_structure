@@ -5,7 +5,7 @@
             <div class="o_legal_dms_explorer_toolbar">
                 <button class="btn btn-primary" t-on-click="createRootFolder">New Folder</button>
                 <button class="btn btn-primary" t-on-click="createSubfolder">New Subfolder</button>
-                <button class="btn btn-secondary" t-on-click="renameSelected">Rename</button>
+                <button class="btn btn-secondary" t-on-click="editSelected">Edit</button>
                 <button class="btn btn-secondary" t-on-click="refreshTree">Refresh</button>
                 <button
                     class="btn btn-danger"

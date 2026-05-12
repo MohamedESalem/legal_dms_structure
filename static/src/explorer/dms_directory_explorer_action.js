@@ -17,7 +17,7 @@ class DmsDirectoryExplorerAction extends Component {
         this.toggleNode = this.toggleNode.bind(this);
         this.createRootFolder = this.createRootFolder.bind(this);
         this.createSubfolder = this.createSubfolder.bind(this);
-        this.renameSelected = this.renameSelected.bind(this);
+        this.editSelected = this.editSelected.bind(this);
         this.deleteSelected = this.deleteSelected.bind(this);
         this.refreshTree = this.refreshTree.bind(this);
         this.state = useState({
@@ -170,7 +170,7 @@ class DmsDirectoryExplorerAction extends Component {
         await this._openCreateDialog(this.selectedNode);
     }
 
-    async renameSelected() {
+    async editSelected() {
         if (!this.selectedNode) {
             this.notification.add("Select a folder before renaming.", { type: "warning" });
             return;
@@ -179,7 +179,7 @@ class DmsDirectoryExplorerAction extends Component {
         await this.action.doAction(
             {
                 type: "ir.actions.act_window",
-                name: "Rename Folder",
+                name: "Edit Folder",
                 res_model: "dms.directory.template",
                 res_id: selectedId,
                 views: [[false, "form"]],
