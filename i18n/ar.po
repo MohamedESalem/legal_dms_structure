@@ -279,12 +279,12 @@ msgstr ""
 #. module: legal_dms_structure
 #: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__create_cases
 msgid "Create or sync case matter folders."
-msgstr "إنشاء أو مزامنة مجلدات مسائل القضايا."
+msgstr "إنشاء أو مزامنة مجلدات القضايا."
 
 #. module: legal_dms_structure
 #: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__create_subjects
 msgid "Create or sync subject matter folders."
-msgstr "إنشاء أو مزامنة مجلدات مسائل المواضيع."
+msgstr "إنشاء أو مزامنة مجلدات المسائل ."
 
 #. module: legal_dms_structure
 #: model:ir.model.fields,help:legal_dms_structure.field_legal_dms_backfill_wizard__create_clients
@@ -298,7 +298,7 @@ msgid ""
 "Created %(clients)s client folders, %(cases)s case folders, and %(subjects)s"
 " subject folders. Synced %(clients_synced)s existing clients, "
 "%(cases_synced)s existing cases, and %(subjects_synced)s existing subjects."
-msgstr "تم إنشاء %(clients)s مجلد عميل، و %(cases)s مجلد قضية، و %(subjects)s مجلد موضوع. تمت مزامنة %(clients_synced)s عملاء حاليين، و %(cases_synced)s قضايا حالية، و %(subjects_synced)s مواضيع حالية."
+msgstr "تم إنشاء %(clients)s مجلد عميل، و %(cases)s مجلد قضية، و %(subjects)s مجلد مسألة. تمت مزامنة %(clients_synced)s عملاء حاليين، و %(cases_synced)s قضايا حالية، و %(subjects_synced)s مواضيع حالية."
 
 #. module: legal_dms_structure
 #: model:ir.model.fields,field_description:legal_dms_structure.field_dms_directory_template__create_uid
@@ -819,26 +819,26 @@ msgstr "المجلدات الفرعية"
 #: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory_template__level__subject
 #: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__target_model__subject
 msgid "Subject"
-msgstr "موضوع"
+msgstr "مسألة"
 
 #. module: legal_dms_structure
 #. odoo-python
 #: code:addons/legal_dms_structure/models/dms_directory.py:0
 #: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__subject_node
 msgid "Subject Directory"
-msgstr "مجلد الموضوع"
+msgstr "مجلد المسألة"
 
 #. module: legal_dms_structure
 #: model:dms.smart.button.config,name:legal_dms_structure.dms_smart_button_subject_root
 msgid "Subject Documents"
-msgstr "مستندات الموضوع"
+msgstr "مستندات المسألة"
 
 #. module: legal_dms_structure
 #. odoo-python
 #: code:addons/legal_dms_structure/models/dms_directory.py:0
 #: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_directory__legal_node_type__subject_root
 msgid "Subject Root"
-msgstr "جذر الموضوع"
+msgstr "جذر المسألة"
 
 #. module: legal_dms_structure
 #. odoo-python
@@ -849,7 +849,7 @@ msgstr "جذر الموضوع"
 #: model:ir.model.fields,field_description:legal_dms_structure.field_legal_dms_backfill_wizard__create_subjects
 #: model:ir.model.fields.selection,name:legal_dms_structure.selection__dms_smart_button_config__directory_type__subjects
 msgid "Subjects"
-msgstr "الموضوعات"
+msgstr "المسائل"
 
 #. module: legal_dms_structure
 #. odoo-python
