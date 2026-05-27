@@ -383,13 +383,13 @@ msgstr "المستندات"
 #. odoo-javascript
 #: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
 msgid "Edit"
-msgstr "تحرير"
+msgstr "تعديل"
 
 #. module: legal_dms_structure
 #. odoo-javascript
 #: code:addons/legal_dms_structure/static/src/explorer/dms_directory_explorer_action.js:0
 msgid "Edit Folder"
-msgstr "تحرير المجلد"
+msgstr "تعديل المجلد"
 
 #. module: legal_dms_structure
 #. odoo-javascript
