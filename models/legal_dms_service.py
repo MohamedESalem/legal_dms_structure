@@ -377,15 +377,23 @@ class LegalDmsService(models.AbstractModel):
 
     def _top_level_templates(self, level):
         excluded_usages = ["clients_root", "archive_root"]
+        parent_domain = [("parent_id", "=", False)]
         if level == "client":
             excluded_usages.extend(["cases_container", "subjects_container"])
+            clients_root = self._special_template("clients_root")
+            if clients_root:
+                parent_domain = [
+                    "|",
+                    ("parent_id", "=", False),
+                    ("parent_id", "=", clients_root.id),
+                ]
         return self._template_model().search(
             [
                 ("active", "=", True),
                 ("level", "=", level),
-                ("parent_id", "=", False),
                 ("usage", "not in", excluded_usages),
-            ],
+            ]
+            + parent_domain,
             order="sequence, id",
         )
 
