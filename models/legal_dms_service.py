@@ -643,14 +643,62 @@ class LegalDmsService(models.AbstractModel):
                 renamed += 1
         return renamed
 
-    def _project_directory_name(self, project, parent_directory):
+    def _project_directory_name(
+        self, project, parent_directory, current_directory=False
+    ):
         fallback_prefix = "CASE" if project.matter_type == "case" else "SUB"
         desired_name = self._compose_directory_name(
             self._project_sequence_value(project),
             project.name,
             f"{fallback_prefix}-{project.id:06d}",
         )
-        return self._child_unique_name(parent_directory, desired_name)
+        return self._child_unique_name(
+            parent_directory,
+            desired_name,
+            exclude_directory=current_directory,
+        )
+
+    def sync_project_directory_name(self, project, directory=False):
+        """Keep a linked case or subject root aligned with its project name."""
+        if not project or not project.exists():
+            return self.env["dms.directory"]
+        directory = directory or (
+            self._get_record_directory_field(project)
+            or self._get_record_archived_directory_field(project)
+            or self._get_live_directory(project)
+            or self._get_archived_directory(project)
+        )
+        if not directory or not directory.parent_id:
+            return directory
+        expected_name = self._project_directory_name(
+            project,
+            directory.parent_id,
+            current_directory=directory,
+        )
+        if directory.name != expected_name:
+            self._directory_write(directory, {"name": expected_name})
+        return directory
+
+    @api.model
+    def sync_project_directory_names(self):
+        """Align existing managed case and subject roots on install or upgrade."""
+        directories = self.env["dms.directory"].sudo().search(
+            [
+                ("legal_node_type", "in", ["case_root", "subject_root"]),
+                ("legal_record_model", "=", "project.project"),
+                ("legal_record_id", "!=", False),
+            ]
+        )
+        renamed = 0
+        for directory in directories:
+            project = self._linked_record_from_directory(directory)
+            if not project or project._name != "project.project":
+                continue
+            previous_name = directory.name
+            self.sync_project_directory_name(project, directory)
+            if directory.name != previous_name:
+                renamed += 1
+        return renamed
 
     def _linked_record_from_directory(self, directory):
         model_name = directory.legal_record_model or directory.res_model
@@ -813,6 +861,7 @@ class LegalDmsService(models.AbstractModel):
             return self.env["dms.directory"]
         directory = self._get_record_directory_field(project) or self._get_live_directory(project)
         if directory:
+            self.sync_project_directory_name(project, directory)
             self._sync_project_template_structure(project, directory)
             self._sync_directory_fields(project)
             self.sync_project_access(project)
@@ -959,7 +1008,7 @@ class LegalDmsService(models.AbstractModel):
         if record._name == "res.partner":
             target_name = self._partner_directory_name(record, target_parent)
         else:
-            target_name = self._child_unique_name(target_parent, directory.name)
+            target_name = self._project_directory_name(record, target_parent)
         self._directory_write(
             directory,
             {

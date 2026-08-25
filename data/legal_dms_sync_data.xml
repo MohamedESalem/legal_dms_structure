@@ -2,4 +2,5 @@
 <odoo>
     <function model="legal.dms.service" name="sync_smart_button_views" />
     <function model="legal.dms.service" name="sync_partner_directory_names" />
+    <function model="legal.dms.service" name="sync_project_directory_names" />
 </odoo>

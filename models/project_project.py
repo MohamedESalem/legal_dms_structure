@@ -74,6 +74,10 @@ class ProjectProject(models.Model):
                         service.ensure_project_directory(project)
             if previous_partners:
                 service.sync_partner_access(previous_partners.exists())
+        if {"name", "sequence_code"}.intersection(vals):
+            for project in self:
+                if service._record_has_any_directory(project):
+                    service.sync_project_directory_name(project)
         return result
 
     def unlink(self):
