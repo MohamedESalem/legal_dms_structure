@@ -145,7 +145,34 @@ class LegalDmsService(models.AbstractModel):
         return tuple(field_names)
 
     def _is_client_partner(self, partner):
-        return bool(partner and partner.exists() and not partner.parent_id)
+        if not partner or not partner.exists() or partner.parent_id:
+            return False
+        legal_matter = (
+            self.env["project.project"]
+            .sudo()
+            .search(
+                [
+                    ("partner_id.commercial_partner_id", "=", partner.id),
+                    ("is_template", "=", False),
+                    ("matter_type", "in", ["case", "subject"]),
+                ],
+                limit=1,
+            )
+        )
+        if legal_matter:
+            return True
+        return bool(
+            self.env["crm.lead"]
+            .sudo()
+            .search(
+                [
+                    ("partner_id.commercial_partner_id", "=", partner.id),
+                    ("active", "=", True),
+                    ("stage_id.is_won", "=", True),
+                ],
+                limit=1,
+            )
+        )
 
     def _is_legal_matter(self, project):
         return bool(
@@ -216,8 +243,15 @@ class LegalDmsService(models.AbstractModel):
         names = storage.root_directory_ids.sudo().mapped("name")
         return unique_name(desired_name, names)
 
-    def _child_unique_name(self, parent_directory, desired_name):
-        names = parent_directory.child_directory_ids.sudo().mapped("name")
+    def _child_unique_name(
+        self, parent_directory, desired_name, exclude_directory=False
+    ):
+        children = parent_directory.child_directory_ids.sudo()
+        if exclude_directory:
+            children = children.filtered(
+                lambda directory: directory.id != exclude_directory.id
+            )
+        names = children.mapped("name")
         return unique_name(desired_name, names)
 
     def _directory_create(self, vals):
@@ -553,13 +587,61 @@ class LegalDmsService(models.AbstractModel):
             return next_code
         return False
 
-    def _partner_directory_name(self, partner, parent_directory):
+    def _partner_directory_name(
+        self, partner, parent_directory, current_directory=False
+    ):
         desired_name = self._compose_directory_name(
             self._partner_sequence_value(partner),
             partner.display_name,
             f"CLT-{partner.id:06d}",
         )
-        return self._child_unique_name(parent_directory, desired_name)
+        return self._child_unique_name(
+            parent_directory,
+            desired_name,
+            exclude_directory=current_directory,
+        )
+
+    def sync_partner_directory_name(self, partner, directory=False):
+        """Keep a linked client root aligned with the partner's current name."""
+        if not partner or not partner.exists():
+            return self.env["dms.directory"]
+        directory = directory or (
+            self._get_record_directory_field(partner)
+            or self._get_record_archived_directory_field(partner)
+            or self._get_live_directory(partner)
+            or self._get_archived_directory(partner)
+        )
+        if not directory or not directory.parent_id:
+            return directory
+        expected_name = self._partner_directory_name(
+            partner,
+            directory.parent_id,
+            current_directory=directory,
+        )
+        if directory.name != expected_name:
+            self._directory_write(directory, {"name": expected_name})
+        return directory
+
+    @api.model
+    def sync_partner_directory_names(self):
+        """Align existing managed client roots during module install or upgrade."""
+        directories = self.env["dms.directory"].sudo().search(
+            [
+                ("legal_node_type", "=", "client_root"),
+                ("legal_record_model", "=", "res.partner"),
+                ("legal_record_id", "!=", False),
+            ]
+        )
+        renamed = 0
+        for directory in directories:
+            partner = self._linked_record_from_directory(directory)
+            if not partner or partner._name != "res.partner":
+                continue
+            previous_name = directory.name
+            self.sync_partner_directory_name(partner, directory)
+            if directory.name != previous_name:
+                renamed += 1
+        return renamed
 
     def _project_directory_name(self, project, parent_directory):
         fallback_prefix = "CASE" if project.matter_type == "case" else "SUB"
@@ -688,6 +770,7 @@ class LegalDmsService(models.AbstractModel):
             return self.env["dms.directory"]
         directory = self._get_record_directory_field(partner) or self._get_live_directory(partner)
         if directory:
+            self.sync_partner_directory_name(partner, directory)
             self._sync_partner_template_structure(directory)
             self._sync_directory_fields(partner)
             self._ensure_client_container(directory, "cases_container")
@@ -872,11 +955,16 @@ class LegalDmsService(models.AbstractModel):
                 client_directory,
                 self._matter_container_usage(record),
             )
+        target_name = directory.name
+        if record._name == "res.partner":
+            target_name = self._partner_directory_name(record, target_parent)
+        else:
+            target_name = self._child_unique_name(target_parent, directory.name)
         self._directory_write(
             directory,
             {
                 "parent_id": target_parent.id,
-                "name": self._child_unique_name(target_parent, directory.name),
+                "name": target_name,
             },
         )
         self._restore_subtree_links(directory)
@@ -1084,7 +1172,7 @@ class LegalDmsService(models.AbstractModel):
         counts = defaultdict(int)
         if create_clients:
             partners = self.env["res.partner"].sudo().search([("parent_id", "=", False)])
-            for partner in partners:
+            for partner in partners.filtered(self._is_client_partner):
                 if not self._record_needs_directory_sync(partner):
                     self.ensure_partner_directory(partner)
                     counts["clients_synced"] += 1

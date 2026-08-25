@@ -58,6 +58,10 @@ class ResPartner(models.Model):
             for partner in self.filtered(service._is_client_partner):
                 if not service._record_has_any_directory(partner):
                     service.ensure_partner_directory(partner)
+        if {"name", "partner_sequence", "client_sequence"}.intersection(vals):
+            for partner in self:
+                if service._record_has_any_directory(partner):
+                    service.sync_partner_directory_name(partner)
         return result
 
     def unlink(self):

@@ -1,3 +1,4 @@
+from . import crm_lead
 from . import dms_directory
 from . import dms_directory_template
 from . import dms_smart_button_config
